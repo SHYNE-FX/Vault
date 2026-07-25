@@ -440,7 +440,8 @@ input { font-family: inherit; }
 /* ===== INSTALL BUTTON ===== */
 .install-btn {
   position: fixed;
-  left: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: calc(16px + env(safe-area-inset-bottom));
   display: flex; align-items: center; gap: 6px;
   background: var(--accent);
@@ -454,7 +455,7 @@ input { font-family: inherit; }
   box-shadow: var(--elev-2);
   cursor: pointer;
 }
-.install-btn:active { transform: scale(.97); }
+.install-btn:active { transform: translateX(-50%) scale(.97); }
 
 /* ===== UPDATE BAR ===== */
 .update-bar {
