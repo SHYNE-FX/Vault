@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Vault</title>
+<meta name="theme-color" content="#3a58db" />
+<meta name="description" content="Encrypted local password vault" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Vault" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geomini:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --accent: #3a58db;
+  --accent-light: #6b82e6;
+  --accent-lighter: #9aabf0;
+  --accent-dark: #26399e;
+  --accent-tint: #e9ecfb;
+  --accent-tint-2: #d2d9f7;
+
+  --bg: #f6f6fb;
+  --surface: #ffffff;
+  --surface-alt: #f0f1f8;
+  --on-surface: #1a1b2b;
+  --on-surface-muted: #6b6d84;
+  --outline: #e1e2ee;
+
+  --danger: #b3261e;
+  --success: #1e8e3e;
+
+  --radius-sm: 10px;
+  --radius-md: 10px;
+  --radius-lg: 10px;
+
+  --elev-1: 0 1px 3px rgba(14,17,35,0.08), 0 1px 2px rgba(14,17,35,0.06);
+  --elev-2: 0 4px 14px rgba(14,17,35,0.12);
+  --elev-3: 0 -2px 24px rgba(14,17,35,0.16);
+}
+
+* { box-sizing: border-box; }
+*, *::before, *::after {
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease,
+              box-shadow .18s ease, opacity .18s ease, transform .12s ease;
+}
+html, body {
+  margin: 0; padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--on-surface);
+  font-family: 'Geomini', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+.brand-icon { font-size: 48px !important; margin-bottom: 12px; color: var(--accent); }
+.fab-icon { font-size: 26px !important; color: #fff; }
+body { max-width: 560px; margin: 0 auto; position: relative; }
+.hidden { display: none !important; }
+button { font-family: inherit; cursor: pointer; }
+input { font-family: inherit; }
+
+/* ===== SCREENS ===== */
+.screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  animation: screen-fade .25s ease-out;
+}
+@keyframes screen-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* ===== AUTH (setup / unlock) ===== */
+.auth-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 24px calc(24px + env(safe-area-inset-bottom));
+}
+.brand { text-align: center; margin-bottom: 32px; }
+.brand svg { margin-bottom: 12px; }
+.brand h1 { font-size: 24px; font-weight: 600; margin: 0 0 6px; color: var(--accent-dark); }
+.brand .sub { color: var(--on-surface-muted); font-size: 14px; margin: 0; line-height: 1.4; }
+
+.auth-form { display: flex; flex-direction: column; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field span { font-size: 12px; font-weight: 600; color: var(--accent-light); letter-spacing: .2px; }
+.field input {
+  border: 1.5px solid var(--outline);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 16px;
+  color: var(--on-surface);
+  outline: none;
+  transition: border-color .15s;
+}
+.field input:focus { border-color: var(--accent); }
+
+.hint { min-height: 16px; font-size: 12.5px; color: var(--danger); margin: 0; }
+
+.btn {
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  transition: opacity .15s, transform .12s ease, box-shadow .15s ease, background-color .18s ease;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary:active { box-shadow: none; }
+.btn-block { width: 100%; }
+.btn-primary { background: var(--accent); color: #fff; box-shadow: var(--elev-1); }
+.btn-primary:disabled { opacity: .5; }
+.btn-ghost { background: var(--accent-tint); color: var(--accent); }
+.btn-danger { background: var(--danger); color: #fff; }
+
+.link-btn {
+  background: none; border: none;
+  color: var(--accent-light);
+  font-size: 13.5px;
+  margin-top: 20px;
+  text-align: center;
+  text-decoration: underline;
+}
+.fineprint {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--on-surface-muted);
+  margin-top: 28px;
+}
+
+/* ===== TOP BAR ===== */
+.topbar {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: calc(14px + env(safe-area-inset-top)) 16px 16px;
+  background: var(--accent);
+}
+.topbar h1 { font-size: 22px; font-weight: 700; margin: 0; color: #fff; }
+.topbar-brand { display: flex; align-items: center; gap: 8px; }
+.topbar-logo { width: 28px; height: 28px; border-radius: 7px; display: block; }
+.icon-btn {
+  border: none; background: var(--surface);
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  box-shadow: var(--elev-1);
+  transition: transform .12s ease, box-shadow .15s ease, background-color .18s ease;
+}
+.icon-btn:active { transform: scale(.9); }
+#btn-menu.icon-btn {
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: var(--accent);
+  box-shadow: none;
+}
+#editor-close.icon-btn {
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: #cd1c18;
+  box-shadow: none;
+}
+#editor-close.icon-btn:active { transform: scale(.9) rotate(-6deg); }
+
+.searchbar {
+  margin: 16px 16px 12px;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  box-shadow: var(--elev-1);
+  color: var(--on-surface-muted);
+}
+.searchbar input {
+  border: none; outline: none; background: none;
+  flex: 1; font-size: 15px; color: var(--on-surface);
+}
+
+.chips {
+  padding: 0 16px 14px;
+}
+.chips-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1.5px solid var(--outline);
+  border-radius: var(--radius-sm);
+  padding: 0 14px;
+  box-shadow: var(--elev-1);
+}
+.chips-select-icon { color: var(--accent-light); font-size: 20px !important; flex: none; }
+.chips-select-caret { color: var(--on-surface-muted); font-size: 20px !important; flex: none; pointer-events: none; }
+.chips-select-wrap select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+  flex: 1;
+  padding: 13px 4px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--on-surface);
+  font-family: inherit;
+}
+
+/* ===== VAULT LIST ===== */
+.vault-list {
+  padding: 0 16px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.item-card {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  box-shadow: var(--elev-1);
+  animation: card-in .22s ease-out backwards;
+  transition: transform .12s ease, box-shadow .15s ease;
+}
+.item-card:active { transform: scale(.98); box-shadow: var(--elev-1); }
+@keyframes card-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.item-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex: none;
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+.item-icon .material-symbols-outlined { font-size: 22px !important; }
+.item-text { flex: 1; min-width: 0; }
+.item-title { font-size: 15px; font-weight: 600; color: var(--on-surface); margin: 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-sub { font-size: 13px; color: var(--on-surface-muted); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-cat-tag {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+  color: var(--accent-light);
+}
+
+.empty-state { text-align: center; padding: 80px 24px; color: var(--on-surface-muted); }
+.empty-state p { margin: 4px 0; }
+.empty-sub { font-size: 13px; }
+
+/* ===== FAB ===== */
+.fab {
+  position: fixed;
+  right: max(20px, calc((100vw - 560px) / 2 + 20px));
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  width: 58px; height: 58px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--elev-2);
+  z-index: 10;
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .15s ease;
+}
+.fab:active { transform: scale(.9) rotate(-6deg); }
+
+/* ===== SHEETS ===== */
+.sheet-overlay {
+  position: fixed; inset: 0;
+  background: rgba(7,8,26,0.45);
+  z-index: 50;
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: overlay-in .2s ease-out;
+}
+@keyframes overlay-in { from { opacity: 0; } to { opacity: 1; } }
+.sheet {
+  width: 100%; max-width: 560px;
+  background: var(--surface);
+  border-radius: 22px 22px 0 0;
+  padding: 10px 20px calc(20px + env(safe-area-inset-bottom));
+  max-height: 88dvh;
+  overflow-y: auto;
+  box-shadow: var(--elev-3);
+  animation: sheet-up .28s cubic-bezier(.32,.72,0,1);
+}
+.sheet-tall { max-height: 94dvh; display: flex; flex-direction: column; }
+@keyframes sheet-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.sheet-handle {
+  width: 40px; height: 4px; background: var(--outline);
+  border-radius: 4px; margin: 6px auto 14px;
+}
+.sheet h2 { font-size: 18px; font-weight: 700; margin: 0 0 16px; color: var(--accent-dark); }
+
+.picker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.picker-item {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  border: 1.5px solid var(--outline);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 18px 10px;
+  font-size: 13.5px; font-weight: 600; color: var(--on-surface);
+  transition: transform .12s ease, border-color .15s ease, background-color .15s ease;
+}
+.picker-item:active { transform: scale(.95); background: var(--accent-tint); border-color: var(--accent-lighter); }
+.picker-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.picker-icon .material-symbols-outlined { font-size: 20px !important; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+
+.sheet-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.sheet-header h2 { margin: 0; flex: 1; text-align: center; font-size: 16px; }
+
+.editor-form { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; flex: 1; padding-bottom: 10px; }
+.editor-form .field select {
+  border: 1.5px solid var(--outline);
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 13px 14px;
+  font-size: 15px;
+  width: 100%;
+  outline: none;
+  color: var(--on-surface);
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6d84' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 18px;
+}
+.editor-form .field select:focus { border-color: var(--accent); background-color: var(--surface); }
+.editor-form .field input, .editor-form .field textarea {
+  border: 1.5px solid var(--outline);
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 13px 14px;
+  font-size: 15px;
+  width: 100%;
+  outline: none;
+  color: var(--on-surface);
+}
+.editor-form .field input:focus, .editor-form .field textarea:focus { border-color: var(--accent); background: var(--surface); }
+.editor-form textarea { resize: vertical; min-height: 70px; font-family: inherit; }
+.field-row { display: flex; gap: 10px; }
+.field-row .field { flex: 1; }
+.pass-field-wrap { position: relative; }
+.pass-field-wrap input { padding-right: 74px !important; }
+.pass-tools { position: absolute; right: 6px; top: 6px; display: flex; gap: 2px; }
+.pass-tools button {
+  border: none; background: none; color: var(--accent);
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pass-tools button:active { background: var(--accent-tint); }
+
+.sheet-footer { padding-top: 12px; }
+
+/* ===== VIEW ENTRY ===== */
+.view-body { display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px; overflow-y: auto; }
+.view-row {
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+}
+.view-row-text { min-width: 0; flex: 1; }
+.view-row-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; color: var(--accent-light); margin: 0 0 3px; }
+.view-row-value { font-size: 15px; color: var(--on-surface); margin: 0; word-break: break-word; font-family: 'Roboto Mono', monospace; }
+.view-row-value.masked { letter-spacing: 2px; }
+.view-row-actions { display: flex; gap: 4px; flex: none; }
+.view-row-actions button {
+  border: none; background: var(--surface);
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+.view-notes { white-space: pre-wrap; font-family: inherit !important; font-size: 14px !important; }
+
+/* ===== MENU ===== */
+.menu-row {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; border: none; background: none;
+  padding: 14px 4px; font-size: 15px; font-weight: 500;
+  color: var(--on-surface);
+  border-bottom: 1px solid var(--outline);
+  transition: background-color .15s ease, transform .1s ease;
+  border-radius: 8px;
+}
+.menu-row:active { transform: scale(.98); background: var(--accent-tint); }
+.menu-row.danger { color: var(--danger); }
+.menu-row.danger svg { stroke: var(--danger); }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  left: 50%; transform: translateX(-50%);
+  background: var(--accent-dark);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-size: 13.5px;
+  z-index: 100;
+  box-shadow: var(--elev-2);
+  max-width: 88%;
+  text-align: center;
+  animation: toast-in .22s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+/* ===== INSTALL BUTTON ===== */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.install-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.16);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.install-btn:active { transform: scale(.97); }
+
+/* ===== UPDATE BAR ===== */
+.update-bar {
+  position: fixed;
+  top: env(safe-area-inset-top);
+  left: 0; right: 0;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  background: var(--accent-dark);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 13px;
+  z-index: 110;
+  box-shadow: var(--elev-2);
+}
+.update-bar button {
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.update-bar button:active { transform: scale(.96); }
+
+@media (min-width: 560px) {
+  body { border-left: 1px solid var(--outline); border-right: 1px solid var(--outline); min-height: 100dvh; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============ SETUP SCREEN ============ -->
+<section id="screen-setup" class="screen hidden">
+  <div class="auth-wrap">
+    <div class="brand">
+      <span class="material-symbols-outlined brand-icon">encrypted</span>
+      <h1>Vault</h1>
+      <p class="sub">Create a master password to encrypt everything on this device.</p>
+    </div>
+    <form id="form-setup" class="auth-form" autocomplete="off">
+      <label class="field">
+        <span>Master password</span>
+        <input type="password" id="setup-pass" minlength="6" required placeholder="At least 6 characters" />
+      </label>
+      <label class="field">
+        <span>Confirm password</span>
+        <input type="password" id="setup-pass2" minlength="6" required placeholder="Re-enter password" />
+      </label>
+      <p class="hint" id="setup-error"></p>
+      <button type="submit" class="btn btn-primary btn-block">Create Vault</button>
+    </form>
+    <p class="fineprint">AES-256-GCM encryption. Your password never leaves this device.</p>
+  </div>
+</section>
+
+<!-- ============ UNLOCK SCREEN ============ -->
+<section id="screen-unlock" class="screen hidden">
+  <div class="auth-wrap">
+    <div class="brand">
+      <span class="material-symbols-outlined brand-icon">encrypted</span>
+      <h1>Welcome back</h1>
+      <p class="sub">Unlock your vault to continue.</p>
+    </div>
+    <form id="form-unlock" class="auth-form" autocomplete="off">
+      <label class="field">
+        <span>Master password</span>
+        <input type="password" id="unlock-pass" required placeholder="Enter password" autofocus />
+      </label>
+      <p class="hint" id="unlock-error"></p>
+      <button type="submit" class="btn btn-primary btn-block">Unlock</button>
+      <button type="button" id="btn-biometric" class="btn btn-ghost btn-block hidden">
+        <span class="material-symbols-outlined">fingerprint</span>
+        Use biometrics
+      </button>
+    </form>
+    <button type="button" id="btn-reset-vault" class="link-btn">Forgot password? Reset vault</button>
+  </div>
+</section>
+
+<!-- ============ MAIN APP ============ -->
+<section id="screen-app" class="screen hidden">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <img src="icons/icon.svg" alt="" class="topbar-logo" />
+      <h1 id="topbar-title">Vault</h1>
+    </div>
+    <div class="topbar-actions">
+      <button id="install-btn" class="install-btn hidden" type="button" aria-label="Install app">
+        <span class="material-symbols-outlined">install_mobile</span>
+        Install app
+      </button>
+      <button id="btn-menu" class="icon-btn" aria-label="Menu">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="searchbar">
+    <span class="material-symbols-outlined">search</span>
+    <input type="text" id="search-input" placeholder="Search vault" />
+  </div>
+
+  <nav class="chips" id="category-chips">
+    <label class="chips-select-wrap">
+      <span class="material-symbols-outlined chips-select-icon">filter_list</span>
+      <select id="category-select">
+        <option value="all">All categories</option>
+        <option value="password">Password</option>
+        <option value="bank">Bank</option>
+        <option value="card">Card</option>
+        <option value="document">Documents</option>
+        <option value="token">Token</option>
+        <option value="note">Notes</option>
+      </select>
+      <span class="material-symbols-outlined chips-select-caret">expand_more</span>
+    </label>
+  </nav>
+
+  <main id="vault-list" class="vault-list"></main>
+  <div id="empty-state" class="empty-state hidden">
+    <p>No items yet.</p>
+    <p class="empty-sub">Tap + to add your first entry.</p>
+  </div>
+
+  <button id="btn-fab" class="fab" aria-label="Add entry">
+    <span class="material-symbols-outlined fab-icon">add</span>
+  </button>
+</section>
+
+<!-- ============ ADD CATEGORY PICKER SHEET ============ -->
+<div id="sheet-picker" class="sheet-overlay hidden">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>New entry</h2>
+    <div class="picker-grid">
+      <button class="picker-item" data-cat="password">
+        <span class="picker-icon" style="background:var(--accent)"><span class="material-symbols-outlined">key</span></span>Password
+      </button>
+      <button class="picker-item" data-cat="bank">
+        <span class="picker-icon" style="background:var(--accent-light)"><span class="material-symbols-outlined">account_balance</span></span>Bank
+      </button>
+      <button class="picker-item" data-cat="card">
+        <span class="picker-icon" style="background:var(--accent-dark)"><span class="material-symbols-outlined">credit_card</span></span>Card
+      </button>
+      <button class="picker-item" data-cat="document">
+        <span class="picker-icon" style="background:var(--accent)"><span class="material-symbols-outlined">draft</span></span>Documents
+      </button>
+      <button class="picker-item" data-cat="token">
+        <span class="picker-icon" style="background:var(--accent-light)"><span class="material-symbols-outlined">token</span></span>Token
+      </button>
+      <button class="picker-item" data-cat="note">
+        <span class="picker-icon" style="background:var(--accent-dark)"><span class="material-symbols-outlined">stylus_note</span></span>Notes
+      </button>
+    </div>
+    <button class="btn btn-ghost btn-block" id="picker-cancel">Cancel</button>
+  </div>
+</div>
+
+<!-- ============ ENTRY EDITOR SHEET ============ -->
+<div id="sheet-editor" class="sheet-overlay hidden">
+  <div class="sheet sheet-tall">
+    <div class="sheet-header">
+      <button id="editor-close" class="icon-btn">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <h2 id="editor-title">New item</h2>
+      <button id="editor-delete" class="icon-btn hidden" aria-label="Delete">
+        <span class="material-symbols-outlined" style="color:var(--danger)">delete</span>
+      </button>
+    </div>
+    <form id="form-editor" class="editor-form"></form>
+    <div class="sheet-footer">
+      <button type="submit" form="form-editor" class="btn btn-primary btn-block">Save entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ VIEW ENTRY SHEET ============ -->
+<div id="sheet-view" class="sheet-overlay hidden">
+  <div class="sheet sheet-tall">
+    <div class="sheet-header">
+      <button id="view-close" class="icon-btn">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <h2 id="view-title">Item</h2>
+      <button id="view-edit" class="icon-btn" aria-label="Edit">
+        <span class="material-symbols-outlined" style="color:var(--accent)">edit</span>
+      </button>
+    </div>
+    <div id="view-body" class="view-body"></div>
+  </div>
+</div>
+
+<!-- ============ SIDE MENU ============ -->
+<div id="sheet-menu" class="sheet-overlay hidden">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Menu</h2>
+    <button class="menu-row" id="menu-export">
+      <span class="material-symbols-outlined" style="color:var(--accent)">download</span>
+      Backup as CSV
+    </button>
+    <button class="menu-row" id="menu-import">
+      <span class="material-symbols-outlined" style="color:var(--accent)">upload</span>
+      Restore from CSV
+    </button>
+    <button class="menu-row" id="menu-biometric-toggle">
+      <span class="material-symbols-outlined" style="color:var(--accent)">fingerprint</span>
+      <span id="menu-biometric-label">Enable biometric unlock</span>
+    </button>
+    <button class="menu-row" id="menu-change-pass">
+      <span class="material-symbols-outlined" style="color:var(--accent)">password</span>
+      Change master password
+    </button>
+    <button class="menu-row danger" id="menu-lock">
+      <span class="material-symbols-outlined" style="color:var(--danger)">lock</span>
+      Lock vault
+    </button>
+    <input type="file" id="import-file-input" accept=".csv" class="hidden" />
+    <button class="btn btn-ghost btn-block" id="menu-cancel">Close</button>
+  </div>
+</div>
+
+<input type="file" id="dummy" class="hidden" />
+
+<div id="toast" class="toast hidden"></div>
+
+<div id="update-bar" class="update-bar hidden">
+  <span>A new version is ready.</span>
+  <button id="update-reload" type="button">Reload</button>
+  <button id="update-dismiss" type="button" aria-label="Dismiss">✕</button>
+</div>
+
+<script>
+// idb.js — tiny IndexedDB wrapper to persist the non-extractable wrapping CryptoKey
+const IDB_NAME = 'vault-idb';
+const IDB_STORE = 'keys';
+
+function openIdb() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbSet(key, value) {
+  const db = await openIdb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(value, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function idbGet(key) {
+  const db = await openIdb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, 'readonly');
+    const req = tx.objectStore(IDB_STORE).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbDel(key) {
+  const db = await openIdb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).delete(key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+</script>
+<script>
+// crypto.js — AES-256-GCM + PBKDF2 helpers. No plaintext ever touches storage.
+
+const PBKDF2_ITER = 210000;
+
+function bufToB64(buf) {
+  const bytes = new Uint8Array(buf);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+function b64ToBuf(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes.buffer;
+}
+
+async function deriveKey(password, saltB64, extractable = false) {
+  const salt = saltB64 ? b64ToBuf(saltB64) : crypto.getRandomValues(new Uint8Array(16)).buffer;
+  const enc = new TextEncoder().encode(password);
+  const baseKey = await crypto.subtle.importKey('raw', enc, 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt, iterations: PBKDF2_ITER, hash: 'SHA-256' },
+    baseKey,
+    { name: 'AES-GCM', length: 256 },
+    extractable,
+    ['encrypt', 'decrypt']
+  );
+  return { key, saltB64: saltB64 || bufToB64(salt) };
+}
+
+async function encryptJSON(key, obj) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const data = new TextEncoder().encode(JSON.stringify(obj));
+  const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+  return { iv: bufToB64(iv), data: bufToB64(cipher) };
+}
+
+async function decryptJSON(key, payload) {
+  const iv = new Uint8Array(b64ToBuf(payload.iv));
+  const cipher = b64ToBuf(payload.data);
+  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipher);
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+async function generateWrappingKey() {
+  // Non-extractable AES key kept in IndexedDB. Used to wrap the master password
+  // for biometric quick-unlock. Gated by a WebAuthn user-verification assertion.
+  return crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+
+async function wrapString(key, str) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(str));
+  return { iv: bufToB64(iv), data: bufToB64(cipher) };
+}
+async function unwrapString(key, payload) {
+  const iv = new Uint8Array(b64ToBuf(payload.iv));
+  const cipher = b64ToBuf(payload.data);
+  const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipher);
+  return new TextDecoder().decode(plain);
+}
+
+const VaultCrypto = { deriveKey, encryptJSON, decryptJSON, generateWrappingKey, wrapString, unwrapString, bufToB64, b64ToBuf };
+
+</script>
+<script>
+// app.js — vault state, UI wiring, CSV backup, biometric quick-unlock
+'use strict';
+
+const LS_VAULT = 'vault_blob_v1';       // { saltB64, iv, data }
+const LS_BIO   = 'vault_bio_v1';        // { credId, wrapped:{iv,data} } wrapped master password
+const IDB_WRAP_KEY = 'wrappingKey';
+
+let masterKey = null;      // CryptoKey (AES-GCM) derived from password, in-memory only
+let saltB64 = null;
+let vault = { items: [] };
+let currentCatFilter = 'all';
+let activeItemId = null;
+
+const CATS = {
+  password: { label: 'Password', icon: 'key' },
+  bank:     { label: 'Bank', icon: 'account_balance' },
+  card:     { label: 'Card', icon: 'credit_card' },
+  document: { label: 'Documents', icon: 'draft' },
+  token:    { label: 'Token', icon: 'token' },
+  note:     { label: 'Notes', icon: 'stylus_note' },
+};
+
+// Field each category's search should match against.
+const SEARCH_FIELD = {
+  password: 'label',
+  bank: 'label',
+  card: 'label',
+  document: 'idNumber',
+  token: 'label',
+  note: 'label',
+};
+
+function iconHtml(name) { return `<span class="material-symbols-outlined">${name}</span>`; }
+
+const DOC_LABEL_OPTIONS = ['Aadhaar Card', 'PAN Card', 'Voter Card', 'DL Card', 'RC Card', 'Passport'];
+
+// field schema per category: [{key,label,type,secret}]
+const SCHEMAS = {
+  password: [
+    { key: 'label', label: 'Site / App name', type: 'text', required: true, placeholder: 'e.g. Gmail, Netflix' },
+    { key: 'username', label: 'Username / Email', type: 'text', placeholder: 'e.g. jane@email.com' },
+    { key: 'password', label: 'Password', type: 'password', secret: true, generate: true, placeholder: 'Enter or generate a password' },
+    { key: 'url', label: 'Website URL', type: 'text', placeholder: 'e.g. https://example.com' },
+    { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Add any extra notes' },
+  ],
+  bank: [
+    { key: 'label', label: 'Bank / Account name', type: 'text', required: true, placeholder: 'e.g. HDFC Savings' },
+    { key: 'accountNumber', label: 'Account number', type: 'text', secret: true, placeholder: 'Enter account number' },
+    { key: 'pin', label: 'Net Banking Password', type: 'password', secret: true, placeholder: 'Enter password' },
+    { key: 'ifsc', label: 'IFSC / Branch code', type: 'text', placeholder: 'e.g. HDFC0001234' },
+    { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Add any extra notes' },
+  ],
+  card: [
+    { key: 'label', label: 'Card name', type: 'text', required: true, placeholder: 'e.g. HDFC Millennia' },
+    { key: 'cardType', label: 'Card type', type: 'select', options: ['Credit', 'Debit'], placeholder: 'Select card type' },
+    { key: 'cardNumber', label: 'Card number', type: 'text', secret: true, placeholder: 'Enter 16-digit card number', maxlength: 16, inputmode: 'numeric' },
+    { key: 'expiry', label: 'Expiry (MM/YY)', type: 'text', placeholder: 'e.g. 08/29', format: 'expiry', maxlength: 5, inputmode: 'numeric' },
+    { key: 'cvv', label: 'CVV', type: 'password', secret: true, placeholder: 'Enter CVV' },
+    { key: 'pin', label: 'ATM PIN', type: 'password', secret: true, placeholder: 'Enter ATM PIN' },
+    { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Add any extra notes' },
+  ],
+  document: [
+    { key: 'label', label: 'Document type', type: 'select', required: true, options: DOC_LABEL_OPTIONS, placeholder: 'Select document type' },
+    { key: 'idNumber', label: 'Label', type: 'text', placeholder: 'Enter a label' },
+    { key: 'password', label: 'Digits', type: 'password', secret: true, placeholder: 'Enter digits (if any)' },
+    { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Add any extra notes' },
+  ],
+  token: [
+    { key: 'label', label: 'Label', type: 'text', required: true, placeholder: 'e.g. 2FA Recovery Code' },
+    { key: 'password', label: 'Password', type: 'password', secret: true, generate: true, placeholder: 'Enter or generate a value' },
+    { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Add any extra notes' },
+  ],
+  note: [
+    { key: 'label', label: 'Label', type: 'text', required: true, placeholder: 'e.g. Wifi Password, Locker Code' },
+    { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Write your note here' },
+  ],
+};
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+function show(el) {
+  if (el.classList.contains('screen')) {
+    $$('.screen').forEach((s) => { if (s !== el) hide(s); });
+  }
+  el.classList.remove('hidden');
+}
+function hide(el) { el.classList.add('hidden'); }
+
+function toast(msg, ms = 2200) {
+  const t = $('#toast');
+  t.textContent = msg;
+  show(t);
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => hide(t), ms);
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+// ================= PWA =================
+let deferredInstallPrompt = null;
+
+function setupPWA() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      // A new worker was found for an already-controlled page.
+      reg.addEventListener('updatefound', () => {
+        const worker = reg.installing;
+        if (!worker) return;
+        worker.addEventListener('statechange', () => {
+          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateBar(reg);
+          }
+        });
+      });
+    }).catch(() => {});
+
+    // Reload once the new worker takes control, so the fresh assets are used.
+    let refreshed = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshed) return;
+      refreshed = true;
+      window.location.reload();
+    });
+  }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    showInstallButton();
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    hideInstallButton();
+    toast('Vault installed');
+  });
+}
+
+function showUpdateBar(reg) {
+  const bar = $('#update-bar');
+  if (!bar) return;
+  show(bar);
+  $('#update-reload').onclick = () => {
+    if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+    hide(bar);
+  };
+  $('#update-dismiss').onclick = () => hide(bar);
+}
+
+function showInstallButton() {
+  const btn = $('#install-btn');
+  if (btn) show(btn);
+}
+
+function hideInstallButton() {
+  const btn = $('#install-btn');
+  if (btn) hide(btn);
+}
+
+async function promptInstall() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  hideInstallButton();
+}
+
+// ================= BOOT =================
+window.addEventListener('DOMContentLoaded', boot);
+
+function storageWorks() {
+  try {
+    const k = '__vault_test__';
+    localStorage.setItem(k, '1');
+    const ok = localStorage.getItem(k) === '1';
+    localStorage.removeItem(k);
+    return ok;
+  } catch (e) { return false; }
+}
+
+function boot() {
+  if (!storageWorks()) {
+    document.body.innerHTML = `<div style="padding:32px;text-align:center;font-family:sans-serif;color:#1a1b2b;">
+      <h2>Storage unavailable</h2>
+      <p>This browser is blocking local storage, so nothing can be saved.</p>
+      <p>Open this app over <b>http://</b> or <b>https://</b> (e.g. run a local server) instead of double-clicking the file directly — Chrome disables storage for <code>file://</code> pages.</p>
+    </div>`;
+    return;
+  }
+  setupPWA();
+  const raw = localStorage.getItem(LS_VAULT);
+  if (!raw) {
+    show($('#screen-setup'));
+  } else {
+    show($('#screen-unlock'));
+    checkBiometricAvailable();
+  }
+  wireEvents();
+}
+
+// ================= SETUP =================
+$('#form-setup') && ($('#form-setup').onsubmit = async (e) => {
+  e.preventDefault();
+  const p1 = $('#setup-pass').value;
+  const p2 = $('#setup-pass2').value;
+  const err = $('#setup-error');
+  err.textContent = '';
+  if (p1.length < 6) { err.textContent = 'Password must be at least 6 characters.'; return; }
+  if (p1 !== p2) { err.textContent = 'Passwords do not match.'; return; }
+
+  const { key, saltB64: s } = await VaultCrypto.deriveKey(p1, null);
+  masterKey = key; saltB64 = s;
+  vault = { items: [] };
+  await persistVault();
+  enterApp();
+  toast('Vault created');
+});
+
+// ================= UNLOCK =================
+$('#form-unlock') && ($('#form-unlock').onsubmit = async (e) => {
+  e.preventDefault();
+  const pass = $('#unlock-pass').value;
+  const err = $('#unlock-error');
+  err.textContent = '';
+  const ok = await tryUnlockWithPassword(pass);
+  if (!ok) err.textContent = 'Incorrect password.';
+});
+
+async function tryUnlockWithPassword(pass) {
+  const raw = JSON.parse(localStorage.getItem(LS_VAULT));
+  try {
+    const { key } = await VaultCrypto.deriveKey(pass, raw.saltB64);
+    const decoded = await VaultCrypto.decryptJSON(key, raw);
+    masterKey = key; saltB64 = raw.saltB64;
+    vault = decoded;
+    enterApp();
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function checkBiometricAvailable() {
+  const bioData = localStorage.getItem(LS_BIO);
+  if (!bioData) return;
+  if (!window.PublicKeyCredential) return;
+  try {
+    const avail = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    if (avail) show($('#btn-biometric'));
+  } catch (e) {}
+}
+
+$('#btn-biometric') && ($('#btn-biometric').onclick = async () => {
+  const err = $('#unlock-error');
+  err.textContent = '';
+  try {
+    const bio = JSON.parse(localStorage.getItem(LS_BIO));
+    const credId = VaultCrypto.b64ToBuf(bio.credId);
+    await navigator.credentials.get({
+      publicKey: {
+        challenge: crypto.getRandomValues(new Uint8Array(32)),
+        allowCredentials: [{ id: credId, type: 'public-key' }],
+        userVerification: 'required',
+        timeout: 60000,
+      },
+    });
+    // assertion succeeded -> unwrap stored password via IndexedDB wrapping key
+    const wrapKey = await idbGet(IDB_WRAP_KEY);
+    if (!wrapKey) throw new Error('no wrap key');
+    const pass = await VaultCrypto.unwrapString(wrapKey, bio.wrapped);
+    const ok = await tryUnlockWithPassword(pass);
+    if (!ok) err.textContent = 'Biometric unlock failed. Use password.';
+  } catch (e) {
+    err.textContent = 'Biometric unlock cancelled or unavailable.';
+  }
+});
+
+$('#btn-reset-vault') && ($('#btn-reset-vault').onclick = () => {
+  if (confirm('This permanently deletes all encrypted data on this device. Continue?')) {
+    localStorage.removeItem(LS_VAULT);
+    localStorage.removeItem(LS_BIO);
+    idbDel(IDB_WRAP_KEY).catch(() => {});
+    location.reload();
+  }
+});
+
+// ================= PERSIST =================
+async function persistVault() {
+  const payload = await VaultCrypto.encryptJSON(masterKey, vault);
+  const blob = JSON.stringify({ saltB64, iv: payload.iv, data: payload.data });
+  localStorage.setItem(LS_VAULT, blob);
+  if (localStorage.getItem(LS_VAULT) !== blob) {
+    throw new Error('Save failed: storage did not persist the write.');
+  }
+}
+
+function enterApp() {
+  hide($('#screen-setup')); hide($('#screen-unlock'));
+  show($('#screen-app'));
+  renderList();
+  updateBioMenuLabel();
+}
+
+// ================= LIST RENDERING =================
+function wireEvents() {
+  const installBtn = $('#install-btn');
+  if (installBtn) installBtn.addEventListener('click', promptInstall);
+
+  $('#category-select').addEventListener('change', (e) => {
+    currentCatFilter = e.target.value;
+    renderList();
+  });
+
+  $('#search-input').addEventListener('input', renderList);
+
+  $('#btn-fab').addEventListener('click', () => show($('#sheet-picker')));
+  $('#picker-cancel').addEventListener('click', () => hide($('#sheet-picker')));
+  $('#sheet-picker').addEventListener('click', (e) => { if (e.target.id === 'sheet-picker') hide($('#sheet-picker')); });
+
+  $$('.picker-item').forEach(btn => btn.addEventListener('click', () => {
+    hide($('#sheet-picker'));
+    openEditor(btn.dataset.cat, null);
+  }));
+
+  $('#editor-close').addEventListener('click', () => hide($('#sheet-editor')));
+  $('#editor-delete').addEventListener('click', onDeleteEntry);
+
+  $('#view-close').addEventListener('click', () => hide($('#sheet-view')));
+  $('#view-edit').addEventListener('click', () => {
+    hide($('#sheet-view'));
+    const item = vault.items.find(i => i.id === activeItemId);
+    openEditor(item.cat, item);
+  });
+
+  $('#btn-menu').addEventListener('click', () => show($('#sheet-menu')));
+  $('#menu-cancel').addEventListener('click', () => hide($('#sheet-menu')));
+  $('#sheet-menu').addEventListener('click', (e) => { if (e.target.id === 'sheet-menu') hide($('#sheet-menu')); });
+
+  $('#menu-lock').addEventListener('click', () => {
+    masterKey = null; vault = { items: [] };
+    hide($('#sheet-menu'));
+    hide($('#screen-app'));
+    show($('#screen-unlock'));
+    checkBiometricAvailable();
+  });
+
+  $('#menu-export').addEventListener('click', exportCSV);
+  $('#menu-import').addEventListener('click', () => $('#import-file-input').click());
+  $('#import-file-input').addEventListener('change', importCSV);
+  $('#menu-biometric-toggle').addEventListener('click', toggleBiometric);
+  $('#menu-change-pass').addEventListener('click', changeMasterPassword);
+}
+
+function renderList() {
+  const q = $('#search-input').value.trim().toLowerCase();
+  const list = $('#vault-list');
+  list.innerHTML = '';
+  const filtered = vault.items.filter(item => {
+    const catOk = currentCatFilter === 'all' || item.cat === currentCatFilter;
+    if (!catOk) return false;
+    if (!q) return true;
+    const hay = (item.fields[SEARCH_FIELD[item.cat]] || '').toLowerCase();
+    return hay.includes(q);
+  }).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+
+  if (filtered.length === 0) { show($('#empty-state')); return; }
+  hide($('#empty-state'));
+
+  filtered.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.style.animationDelay = `${Math.min(idx, 8) * 25}ms`;
+    const sub = item.cat === 'password' ? (item.fields.username || item.fields.url || '') :
+                item.cat === 'card' ? maskTail(item.fields.cardNumber) :
+                item.cat === 'bank' ? maskTail(item.fields.accountNumber) :
+                item.cat === 'document' ? (item.fields.idNumber || '') :
+                item.cat === 'note' ? (item.fields.notes || '') : '';
+    const catTag = item.cat === 'card' ? (item.fields.cardType || CATS.card.label) : CATS[item.cat].label;
+    card.innerHTML = `
+      <div class="item-icon">${iconHtml(CATS[item.cat].icon)}</div>
+      <div class="item-text">
+        <p class="item-title">${escapeHtml(item.fields.label || 'Untitled')}</p>
+        <p class="item-sub">${escapeHtml(sub || CATS[item.cat].label)}</p>
+      </div>
+      <span class="item-cat-tag">${escapeHtml(catTag)}</span>
+    `;
+    card.addEventListener('click', () => openView(item));
+    list.appendChild(card);
+  });
+}
+function maskTail(v) {
+  if (!v) return '';
+  const s = String(v);
+  return s.length > 4 ? '•••• ' + s.slice(-4) : s;
+}
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// ================= EDITOR =================
+function openEditor(cat, item) {
+  activeItemId = item ? item.id : null;
+  $('#editor-title').textContent = item ? 'Edit ' + CATS[cat].label : 'New ' + CATS[cat].label;
+  item ? show($('#editor-delete')) : hide($('#editor-delete'));
+
+  const form = $('#form-editor');
+  form.innerHTML = '';
+  form.dataset.cat = cat;
+  const schema = SCHEMAS[cat];
+
+  for (const f of schema) {
+    const wrap = document.createElement('label');
+    wrap.className = 'field';
+    const value = item ? escapeHtml(item.fields[f.key] || '') : '';
+    if (f.type === 'select') {
+      const opts = f.options.map(o => `<option value="${escapeHtml(o)}" ${value === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('');
+      wrap.innerHTML = `<span>${f.label}</span>
+        <select name="${f.key}" ${f.required ? 'required' : ''}>
+          <option value="" disabled ${value ? '' : 'selected'}>${f.placeholder || 'Select an option'}</option>
+          ${opts}
+        </select>`;
+    } else if (f.type === 'textarea') {
+      wrap.innerHTML = `<span>${f.label}</span><textarea name="${f.key}" placeholder="${f.placeholder || ''}">${value}</textarea>`;
+    } else if (f.secret) {
+      wrap.innerHTML = `<span>${f.label}</span>
+        <div class="pass-field-wrap">
+          <input type="password" name="${f.key}" value="${value}" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''} ${f.maxlength ? `maxlength="${f.maxlength}"` : ''} ${f.inputmode ? `inputmode="${f.inputmode}"` : ''} />
+          <div class="pass-tools">
+            ${f.generate ? `<button type="button" class="btn-gen" title="Generate"><span class="material-symbols-outlined">casino</span></button>` : ''}
+            <button type="button" class="btn-toggle" title="Show"><span class="material-symbols-outlined">visibility</span></button>
+          </div>
+        </div>`;
+    } else {
+      wrap.innerHTML = `<span>${f.label}</span><input type="text" name="${f.key}" value="${value}" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''} ${f.maxlength ? `maxlength="${f.maxlength}"` : ''} ${f.inputmode ? `inputmode="${f.inputmode}"` : ''} />`;
+    }
+    form.appendChild(wrap);
+  }
+
+  if (schema.some(f => f.format === 'expiry')) {
+    const expiryField = schema.find(f => f.format === 'expiry');
+    const expiryInput = form.querySelector(`[name="${expiryField.key}"]`);
+    if (expiryInput) {
+      expiryInput.addEventListener('input', () => {
+        let digits = expiryInput.value.replace(/\D/g, '').slice(0, 4);
+        expiryInput.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+      });
+    }
+  }
+
+  form.querySelectorAll('.btn-toggle').forEach(btn => btn.addEventListener('click', () => {
+    const input = btn.closest('.pass-field-wrap').querySelector('input');
+    const nowText = input.type === 'password';
+    input.type = nowText ? 'text' : 'password';
+    btn.querySelector('.material-symbols-outlined').textContent = nowText ? 'visibility_off' : 'visibility';
+  }));
+  form.querySelectorAll('.btn-gen').forEach(btn => btn.addEventListener('click', () => {
+    const input = btn.closest('.pass-field-wrap').querySelector('input');
+    input.value = generatePassword();
+    input.type = 'text';
+  }));
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const fields = {};
+    for (const f of schema) fields[f.key] = (fd.get(f.key) || '').toString();
+    if (!fields.label) { toast('Label is required'); return; }
+
+    if (activeItemId) {
+      const item2 = vault.items.find(i => i.id === activeItemId);
+      item2.fields = fields;
+      item2.updatedAt = Date.now();
+    } else {
+      vault.items.push({ id: uid(), cat, fields, updatedAt: Date.now() });
+    }
+    try {
+      await persistVault();
+    } catch (err) {
+      toast('Save failed — storage is unavailable in this browser');
+      return;
+    }
+    hide($('#sheet-editor'));
+    renderList();
+    toast('Saved');
+  };
+
+  show($('#sheet-editor'));
+}
+
+async function onDeleteEntry() {
+  if (!activeItemId) return;
+  if (!confirm('Delete this entry permanently?')) return;
+  vault.items = vault.items.filter(i => i.id !== activeItemId);
+  await persistVault();
+  hide($('#sheet-editor'));
+  renderList();
+  toast('Deleted');
+}
+
+function generatePassword() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*';
+  const arr = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(arr, b => chars[b % chars.length]).join('');
+}
+
+// ================= VIEW ENTRY =================
+function openView(item) {
+  activeItemId = item.id;
+  $('#view-title').textContent = item.fields.label || CATS[item.cat].label;
+  const body = $('#view-body');
+  body.innerHTML = '';
+  const schema = SCHEMAS[item.cat];
+
+  for (const f of schema) {
+    const val = item.fields[f.key];
+    if (!val && f.key !== 'label') continue;
+    const row = document.createElement('div');
+    row.className = 'view-row';
+    const isSecret = !!f.secret;
+    row.innerHTML = `
+      <div class="view-row-text">
+        <p class="view-row-label">${f.label}</p>
+        <p class="view-row-value ${isSecret ? 'masked' : ''} ${f.type === 'textarea' ? 'view-notes' : ''}" data-real="${escapeHtml(val)}">${isSecret ? '••••••••' : escapeHtml(val)}</p>
+      </div>
+      <div class="view-row-actions">
+        ${isSecret ? `<button class="btn-eye" title="Show"><span class="material-symbols-outlined">visibility</span></button>` : ''}
+        <button class="btn-copy" title="Copy"><span class="material-symbols-outlined">content_copy</span></button>
+      </div>`;
+    body.appendChild(row);
+
+    if (isSecret) {
+      row.querySelector('.btn-eye').addEventListener('click', (e) => {
+        const p = row.querySelector('.view-row-value');
+        const shown = p.classList.toggle('masked');
+        p.textContent = shown ? '••••••••' : val;
+        e.currentTarget.querySelector('.material-symbols-outlined').textContent = shown ? 'visibility' : 'visibility_off';
+      });
+    }
+    row.querySelector('.btn-copy').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(val);
+        toast('Copied to clipboard');
+        setTimeout(async () => {
+          try { const cur = await navigator.clipboard.readText(); if (cur === val) await navigator.clipboard.writeText(''); } catch (e) {}
+        }, 30000);
+      } catch (e) { toast('Copy failed'); }
+    });
+  }
+  show($('#sheet-view'));
+}
+
+// ================= CSV BACKUP =================
+const CSV_COLUMNS = ['id', 'cat', 'label', 'field1', 'field2', 'field3', 'field4', 'field5', 'field6', 'notes', 'updatedAt'];
+
+function csvEscape(v) {
+  const s = String(v ?? '');
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+function exportCSV() {
+  hide($('#sheet-menu'));
+  const rows = [['id', 'category', 'label', 'field_key_1', 'field_val_1', 'field_key_2', 'field_val_2', 'field_key_3', 'field_val_3', 'field_key_4', 'field_val_4', 'field_key_5', 'field_val_5', 'notes', 'updatedAt']];
+  for (const item of vault.items) {
+    const schema = SCHEMAS[item.cat].filter(f => f.key !== 'label' && f.key !== 'notes');
+    const row = [item.id, item.cat, item.fields.label || ''];
+    for (let i = 0; i < 5; i++) {
+      const f = schema[i];
+      row.push(f ? f.key : '', f ? (item.fields[f.key] || '') : '');
+    }
+    row.push(item.fields.notes || '', item.updatedAt || '');
+    rows.push(row);
+  }
+  const csv = rows.map(r => r.map(csvEscape).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `vault-backup-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Backup downloaded — keep it safe, it is unencrypted');
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else inQuotes = false; }
+      else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c === '\r') {}
+      else field += c;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+async function importCSV(e) {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  const text = await file.text();
+  const rows = parseCSV(text).filter(r => r.length > 1);
+  rows.shift(); // header
+  let added = 0;
+  for (const r of rows) {
+    const [id, cat, label, k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, notes, updatedAt] = r;
+    if (!SCHEMAS[cat]) continue;
+    const fields = { label, notes: notes || '' };
+    [[k1, v1], [k2, v2], [k3, v3], [k4, v4], [k5, v5]].forEach(([k, v]) => { if (k) fields[k] = v; });
+    const exists = vault.items.find(i => i.id === id);
+    if (exists) { exists.fields = fields; exists.updatedAt = Number(updatedAt) || Date.now(); }
+    else { vault.items.push({ id: id || uid(), cat, fields, updatedAt: Number(updatedAt) || Date.now() }); added++; }
+  }
+  await persistVault();
+  renderList();
+  hide($('#sheet-menu'));
+  toast(`Restored ${rows.length} entries (${added} new)`);
+}
+
+// ================= BIOMETRIC UNLOCK SETUP =================
+function updateBioMenuLabel() {
+  const enabled = !!localStorage.getItem(LS_BIO);
+  $('#menu-biometric-label').textContent = enabled ? 'Disable biometric unlock' : 'Enable biometric unlock';
+}
+
+async function toggleBiometric() {
+  hide($('#sheet-menu'));
+  const enabled = !!localStorage.getItem(LS_BIO);
+  if (enabled) {
+    localStorage.removeItem(LS_BIO);
+    await idbDel(IDB_WRAP_KEY).catch(() => {});
+    updateBioMenuLabel();
+    toast('Biometric unlock disabled');
+    return;
+  }
+  if (!window.PublicKeyCredential) { toast('Biometrics not supported on this device'); return; }
+  try {
+    const avail = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    if (!avail) { toast('No biometric hardware found'); return; }
+    const pass = prompt('Re-enter master password to enable biometric unlock:');
+    if (!pass) return;
+    const ok = await verifyPasswordOnly(pass);
+    if (!ok) { toast('Incorrect password'); return; }
+
+    const cred = await navigator.credentials.create({
+      publicKey: {
+        challenge: crypto.getRandomValues(new Uint8Array(32)),
+        rp: { name: 'Vault' },
+        user: { id: crypto.getRandomValues(new Uint8Array(16)), name: 'vault-user', displayName: 'Vault User' },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+        authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required' },
+        timeout: 60000,
+      },
+    });
+    const wrapKey = await VaultCrypto.generateWrappingKey();
+    await idbSet(IDB_WRAP_KEY, wrapKey);
+    const wrapped = await VaultCrypto.wrapString(wrapKey, pass);
+    localStorage.setItem(LS_BIO, JSON.stringify({ credId: VaultCrypto.bufToB64(cred.rawId), wrapped }));
+    updateBioMenuLabel();
+    toast('Biometric unlock enabled');
+  } catch (e) {
+    toast('Could not enable biometric unlock');
+  }
+}
+
+async function verifyPasswordOnly(pass) {
+  const raw = JSON.parse(localStorage.getItem(LS_VAULT));
+  try {
+    const { key } = await VaultCrypto.deriveKey(pass, raw.saltB64);
+    await VaultCrypto.decryptJSON(key, raw);
+    return true;
+  } catch (e) { return false; }
+}
+
+// ================= CHANGE PASSWORD =================
+async function changeMasterPassword() {
+  hide($('#sheet-menu'));
+  const oldPass = prompt('Enter current master password:');
+  if (!oldPass) return;
+  const ok = await verifyPasswordOnly(oldPass);
+  if (!ok) { toast('Incorrect password'); return; }
+  const newPass = prompt('Enter new master password (min 6 chars):');
+  if (!newPass || newPass.length < 6) { toast('Password too short'); return; }
+  const { key, saltB64: s } = await VaultCrypto.deriveKey(newPass, null);
+  masterKey = key; saltB64 = s;
+  await persistVault();
+  if (localStorage.getItem(LS_BIO)) {
+    localStorage.removeItem(LS_BIO);
+    await idbDel(IDB_WRAP_KEY).catch(() => {});
+    updateBioMenuLabel();
+    toast('Password changed. Re-enable biometrics if needed.');
+  } else {
+    toast('Password changed');
+  }
+}
+
+</script>
+</body>
+</html>
