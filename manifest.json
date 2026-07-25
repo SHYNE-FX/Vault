@@ -1,0 +1,20 @@
+{
+  "id": "/vault/",
+  "name": "Vault — Password Manager",
+  "short_name": "Vault",
+  "description": "Encrypted local password, bank, card and document manager",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "en",
+  "categories": ["utilities", "productivity", "security"],
+  "background_color": "#f6f6fb",
+  "theme_color": "#3a58db",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
