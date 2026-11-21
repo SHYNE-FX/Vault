@@ -1334,7 +1334,7 @@ function boot() {
     show($('#screen-setup'));
   } else {
     show($('#screen-unlock'));
-    checkBiometricAvailable();
+    autoBiometric();
   }
   wireEvents();
 }
@@ -1385,15 +1385,31 @@ async function tryUnlockWithPassword(pass) {
 
 async function checkBiometricAvailable() {
   const bioData = localStorage.getItem(LS_BIO);
-  if (!bioData) return;
-  if (!window.PublicKeyCredential) return;
+  if (!bioData) return false;
+  if (!window.PublicKeyCredential) return false;
   try {
     const avail = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
     if (avail) show($('#btn-biometric'));
-  } catch (e) {}
+    return !!avail;
+  } catch (e) { return false; }
 }
 
-$('#btn-biometric') && ($('#btn-biometric').onclick = async () => {
+// [J] Open the biometric prompt automatically whenever the unlock screen appears.
+// The Unlock-with-biometrics button stays as the manual fallback (cancelled prompt,
+// or browsers such as iOS Safari that refuse WebAuthn without a tap).
+let bioBusy = false;
+async function autoBiometric() {
+  if (bioBusy || isUnlocked()) return;
+  if ($('#screen-unlock').classList.contains('hidden')) return;
+  if (document.visibilityState === 'hidden') return;
+  if (await checkBiometricAvailable()) biometricUnlock(true);
+}
+
+$('#btn-biometric') && ($('#btn-biometric').onclick = () => biometricUnlock(false));
+
+async function biometricUnlock(auto) {
+  if (bioBusy) return;
+  bioBusy = true;
   const err = $('#unlock-error');
   err.textContent = '';
   try {
@@ -1414,9 +1430,12 @@ $('#btn-biometric') && ($('#btn-biometric').onclick = async () => {
     const ok = await tryUnlockWithPassword(pass);
     if (!ok) err.textContent = 'Biometric unlock failed. Use password.';
   } catch (e) {
-    err.textContent = 'Biometric unlock cancelled or unavailable.';
+    // a silent auto-prompt that gets dismissed shouldn't show an error
+    err.textContent = auto ? '' : 'Biometric unlock cancelled or unavailable.';
+  } finally {
+    bioBusy = false;
   }
-});
+}
 
 $('#btn-reset-vault') && ($('#btn-reset-vault').onclick = () => {
   if (confirm('This permanently deletes all encrypted data on this device. Continue?')) {
@@ -1477,7 +1496,7 @@ function lockVault(reason) {
     .forEach(id => hide($(id)));
   hide($('#screen-app'));
   show($('#screen-unlock'));
-  checkBiometricAvailable();
+  if (reason) autoBiometric(); else checkBiometricAvailable();   // manual lock: don't instantly re-prompt
   if (reason === 'idle') toast('Locked after 10 minutes of inactivity');
   else if (reason === 'background') toast('Locked after 2 minutes in the background');
 }
@@ -1500,7 +1519,7 @@ function onForegrounded() {
   const away = hiddenAt ? Date.now() - hiddenAt : 0;
   hiddenAt = 0;
   clearTimeout(bgTimer);
-  if (!isUnlocked()) return;
+  if (!isUnlocked()) { autoBiometric(); return; }
   if (away >= BACKGROUND_LOCK_MS) { lockVault('background'); return; }
   if (Date.now() - lastActivity >= IDLE_LOCK_MS) { lockVault('idle'); return; }
   resetIdleTimer();
