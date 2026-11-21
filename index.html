@@ -42,6 +42,34 @@
   --elev-1: 0 1px 3px rgba(14,17,35,0.08), 0 1px 2px rgba(14,17,35,0.06);
   --elev-2: 0 4px 14px rgba(14,17,35,0.12);
   --elev-3: 0 -2px 24px rgba(14,17,35,0.16);
+
+  /* cosmetics-derived (overridden from JS when the user customises) */
+  --accent-fg: #3a58db;
+  --accent-head: #26399e;
+  --accent-label: #6b82e6;
+  --accent-deep: #26399e;
+  --on-accent: #ffffff;
+  --on-deep: #ffffff;
+  --on-accent-16: rgba(255,255,255,.16);
+  --on-deep-18: rgba(255,255,255,.18);
+  --pi-a: #6b82e6;  --on-pi-a: #ffffff;
+  --pi-b: #26399e;  --on-pi-b: #ffffff;
+  --fs: 1;
+  --font: 'Geomini', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #101119;
+  --surface: #1a1b29;
+  --surface-alt: #232436;
+  --on-surface: #e9eaf6;
+  --on-surface-muted: #9fa1ba;
+  --outline: #2f3148;
+  --danger: #e5534b;
+  --success: #4cc38a;
+  --elev-1: 0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+  --elev-2: 0 4px 14px rgba(0,0,0,0.55);
+  --elev-3: 0 -2px 24px rgba(0,0,0,0.6);
 }
 
 * { box-sizing: border-box; }
@@ -54,7 +82,7 @@ html, body {
   height: 100%;
   background: var(--bg);
   color: var(--on-surface);
-  font-family: 'Geomini', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font);
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
 }
@@ -77,8 +105,8 @@ html, body {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   vertical-align: middle;
 }
-.brand-icon { font-size: 48px !important; margin-bottom: 12px; color: var(--accent); font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48; }
-.fab-icon { font-size: 26px !important; color: #fff; }
+.brand-icon { font-size: 48px !important; margin-bottom: 12px; color: var(--accent-fg); font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48; }
+.fab-icon { font-size: 26px !important; color: var(--on-accent); }
 body { max-width: 560px; margin: 0 auto; position: relative; }
 .hidden { display: none !important; }
 button { font-family: inherit; cursor: pointer; }
@@ -104,31 +132,31 @@ input { font-family: inherit; }
 }
 .brand { text-align: center; margin-bottom: 32px; }
 .brand svg { margin-bottom: 12px; }
-.brand h1 { font-size: 24px; font-weight: 600; margin: 0 0 6px; color: var(--accent-dark); }
-.brand .sub { color: var(--on-surface-muted); font-size: 14px; margin: 0; line-height: 1.4; }
+.brand h1 { font-size: calc(24px * var(--fs)); font-weight: 600; margin: 0 0 6px; color: var(--accent-head); }
+.brand .sub { color: var(--on-surface-muted); font-size: calc(14px * var(--fs)); margin: 0; line-height: 1.4; }
 
 .auth-form { display: flex; flex-direction: column; gap: 16px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field span { font-size: 12px; font-weight: 600; color: var(--accent-light); letter-spacing: .2px; }
+.field span { font-size: calc(12px * var(--fs)); font-weight: 600; color: var(--accent-label); letter-spacing: .2px; }
 .field input {
   border: 1.5px solid var(--outline);
   background: var(--surface);
   border-radius: var(--radius-sm);
   padding: 14px 16px;
-  font-size: 16px;
+  font-size: calc(16px * var(--fs));
   color: var(--on-surface);
   outline: none;
   transition: border-color .15s;
 }
-.field input:focus { border-color: var(--accent); }
+.field input:focus { border-color: var(--accent-fg); }
 
-.hint { min-height: 16px; font-size: 12.5px; color: var(--danger); margin: 0; }
+.hint { min-height: 16px; font-size: calc(12.5px * var(--fs)); color: var(--danger); margin: 0; }
 
 .btn {
   border: none;
   border-radius: var(--radius-sm);
   padding: 14px 20px;
-  font-size: 15px;
+  font-size: calc(15px * var(--fs));
   font-weight: 600;
   letter-spacing: .2px;
   transition: opacity .15s, transform .12s ease, box-shadow .15s ease, background-color .18s ease;
@@ -136,22 +164,22 @@ input { font-family: inherit; }
 .btn:active { transform: scale(.97); }
 .btn-primary:active { box-shadow: none; }
 .btn-block { width: 100%; }
-.btn-primary { background: var(--accent); color: #fff; box-shadow: var(--elev-1); }
+.btn-primary { background: var(--accent); color: var(--on-accent); box-shadow: var(--elev-1); }
 .btn-primary:disabled { opacity: .5; }
-.btn-ghost { background: var(--accent-tint); color: var(--accent); }
+.btn-ghost { background: var(--accent-tint); color: var(--accent-fg); }
 .btn-danger { background: var(--danger); color: #fff; }
 
 .link-btn {
   background: none; border: none;
-  color: var(--accent-light);
-  font-size: 13.5px;
+  color: var(--accent-label);
+  font-size: calc(13.5px * var(--fs));
   margin-top: 20px;
   text-align: center;
   text-decoration: underline;
 }
 .fineprint {
   text-align: center;
-  font-size: 11.5px;
+  font-size: calc(11.5px * var(--fs));
   color: var(--on-surface-muted);
   margin-top: 28px;
 }
@@ -163,7 +191,7 @@ input { font-family: inherit; }
   padding: calc(14px + env(safe-area-inset-top)) 16px 16px;
   background: var(--accent);
 }
-.topbar h1 { font-size: 22px; font-weight: 700; margin: 0; color: #fff; }
+.topbar h1 { font-size: calc(22px * var(--fs)); font-weight: 700; margin: 0; color: var(--on-accent); }
 .topbar-brand { display: flex; align-items: center; gap: 8px; }
 .topbar-logo {
   display: inline-flex; align-items: center; justify-content: center;
@@ -171,21 +199,21 @@ input { font-family: inherit; }
 margin-top: .5vh;
   font-size: 24px !important;
   line-height: 1 !important;
-  color: #fff;
+  color: var(--on-accent);
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 .icon-btn {
   border: none; background: var(--surface);
   width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  color: var(--accent);
+  color: var(--accent-fg);
   box-shadow: var(--elev-1);
   transition: transform .12s ease, box-shadow .15s ease, background-color .18s ease;
 }
 .icon-btn:active { transform: scale(.9); }
 #btn-menu.icon-btn {
   border-radius: var(--radius-sm);
-  background: #ffffff;
+  background: var(--on-accent);
   color: var(--accent);
   box-shadow: none;
 }
@@ -208,7 +236,7 @@ margin-top: .5vh;
 }
 .searchbar input {
   border: none; outline: none; background: none;
-  flex: 1; font-size: 15px; color: var(--on-surface);
+  flex: 1; font-size: calc(15px * var(--fs)); color: var(--on-surface);
 }
 
 .chips {
@@ -225,7 +253,7 @@ margin-top: .5vh;
   padding: 0 14px;
   box-shadow: var(--elev-1);
 }
-.chips-select-icon { color: var(--accent-light); font-size: 20px !important; flex: none; }
+.chips-select-icon { color: var(--accent-label); font-size: 20px !important; flex: none; }
 .chips-select-caret { color: var(--on-surface-muted); font-size: 20px !important; flex: none; pointer-events: none; }
 .chips-select-wrap select {
   appearance: none;
@@ -235,7 +263,7 @@ margin-top: .5vh;
   background: none;
   flex: 1;
   padding: 13px 4px;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--fs));
   font-weight: 600;
   color: var(--on-surface);
   font-family: inherit;
@@ -264,20 +292,20 @@ margin-top: .5vh;
   display: flex; align-items: center; justify-content: center;
   flex: none;
   background: var(--accent-tint);
-  color: var(--accent);
+  color: var(--accent-fg);
 }
 .item-icon .material-symbols-outlined { font-size: 22px !important; }
 .item-text { flex: 1; min-width: 0; }
-.item-title { font-size: 15px; font-weight: 600; color: var(--on-surface); margin: 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.item-sub { font-size: 13px; color: var(--on-surface-muted); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-title { font-size: calc(15px * var(--fs)); font-weight: 600; color: var(--on-surface); margin: 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item-sub { font-size: calc(13px * var(--fs)); color: var(--on-surface-muted); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .item-cat-tag {
-  font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
-  color: var(--accent-light);
+  font-size: calc(10.5px * var(--fs)); font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+  color: var(--accent-label);
 }
 
 .empty-state { text-align: center; padding: 80px 24px; color: var(--on-surface-muted); }
 .empty-state p { margin: 4px 0; }
-.empty-sub { font-size: 13px; }
+.empty-sub { font-size: calc(13px * var(--fs)); }
 
 /* ===== FAB ===== */
 .fab {
@@ -320,7 +348,7 @@ margin-top: .5vh;
   width: 40px; height: 4px; background: var(--outline);
   border-radius: 4px; margin: 6px auto 14px;
 }
-.sheet h2 { font-size: 18px; font-weight: 700; margin: 0 0 16px; color: var(--accent-dark); }
+.sheet h2 { font-size: calc(18px * var(--fs)); font-weight: 700; margin: 0 0 16px; color: var(--accent-head); }
 
 .picker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
 .picker-item {
@@ -329,9 +357,11 @@ margin-top: .5vh;
   background: var(--surface);
   border-radius: var(--radius-md);
   padding: 18px 10px;
-  font-size: 13.5px; font-weight: 600; color: var(--on-surface);
+  font-size: calc(13.5px * var(--fs)); font-weight: 600; color: var(--on-surface);
   transition: transform .12s ease, border-color .15s ease, background-color .15s ease;
 }
+.picker-item { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
+.picker-hint { text-align: center; font-size: calc(12px * var(--fs)); color: var(--on-surface-muted); margin: -6px 0 14px; }
 .picker-item:active { transform: scale(.95); background: var(--accent-tint); border-color: var(--accent-lighter); }
 .picker-icon {
   width: 40px; height: 40px; border-radius: 12px;
@@ -344,7 +374,7 @@ margin-top: .5vh;
   display: flex; align-items: center;
   margin-bottom: 12px;
 }
-.sheet-header h2 { margin: 0; text-align: center; font-size: 16px; }
+.sheet-header h2 { margin: 0; text-align: center; font-size: calc(16px * var(--fs)); }
 .sheet-header-side { flex: 1; display: flex; align-items: center; gap: 8px; }
 .sheet-header-side--end { justify-content: flex-end; }
 
@@ -354,7 +384,7 @@ margin-top: .5vh;
   background: var(--surface-alt);
   border-radius: var(--radius-sm);
   padding: 13px 14px;
-  font-size: 15px;
+  font-size: calc(15px * var(--fs));
   width: 100%;
   outline: none;
   color: var(--on-surface);
@@ -366,18 +396,18 @@ margin-top: .5vh;
   background-position: right 12px center;
   background-size: 18px;
 }
-.editor-form .field select:focus { border-color: var(--accent); background-color: var(--surface); }
+.editor-form .field select:focus { border-color: var(--accent-fg); background-color: var(--surface); }
 .editor-form .field input, .editor-form .field textarea {
   border: 1.5px solid var(--outline);
   background: var(--surface-alt);
   border-radius: var(--radius-sm);
   padding: 13px 14px;
-  font-size: 15px;
+  font-size: calc(15px * var(--fs));
   width: 100%;
   outline: none;
   color: var(--on-surface);
 }
-.editor-form .field input:focus, .editor-form .field textarea:focus { border-color: var(--accent); background: var(--surface); }
+.editor-form .field input:focus, .editor-form .field textarea:focus { border-color: var(--accent-fg); background: var(--surface); }
 .editor-form textarea { resize: vertical; min-height: 70px; font-family: inherit; }
 .field-row { display: flex; gap: 10px; }
 .field-row .field { flex: 1; }
@@ -385,13 +415,41 @@ margin-top: .5vh;
 .pass-field-wrap input { padding-right: 74px !important; }
 .pass-tools { position: absolute; right: 6px; top: 6px; display: flex; gap: 2px; }
 .pass-tools button {
-  border: none; background: none; color: var(--accent);
+  border: none; background: none; color: var(--accent-fg);
   width: 32px; height: 32px; border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
 }
 .pass-tools button:active { background: var(--accent-tint); }
 
 .sheet-footer { padding-top: 12px; }
+
+
+/* ===== FIELD EDITOR (long-press a category) ===== */
+.schema-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; padding-bottom: 10px; }
+.schema-note { font-size: calc(12.5px * var(--fs)); color: var(--on-surface-muted); margin: 0 0 4px; }
+.schema-row { background: var(--surface-alt); border: 1.5px solid var(--outline); border-radius: var(--radius-md); }
+.schema-row-head { display: flex; align-items: center; gap: 4px; padding: 6px 6px 6px 12px; }
+.schema-row-toggle { flex: 1; min-width: 0; text-align: left; border: none; background: none; padding: 8px 0; color: var(--on-surface); font-size: calc(14.5px * var(--fs)); font-weight: 600; display: flex; flex-direction: column; gap: 2px; }
+.schema-row-toggle small { font-size: calc(12px * var(--fs)); font-weight: 500; color: var(--on-surface-muted); }
+.schema-row-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.schema-row-head .icon-btn { width: 34px; height: 34px; flex: none; }
+.schema-row-head .icon-btn:disabled { opacity: .3; }
+.schema-row-body { display: none; flex-direction: column; gap: 12px; padding: 4px 12px 14px; border-top: 1px solid var(--outline); margin-top: 2px; padding-top: 12px; }
+.schema-row.open .schema-row-body { display: flex; }
+.schema-row-body .field input[type=text], .schema-row-body .field input[type=number], .schema-row-body .field select {
+  border: 1.5px solid var(--outline); background: var(--surface); border-radius: var(--radius-sm);
+  padding: 11px 12px; font-size: calc(14.5px * var(--fs)); width: 100%; outline: none; color: var(--on-surface); font-family: inherit;
+}
+.schema-row-body .field input:focus, .schema-row-body .field select:focus { border-color: var(--accent-fg); }
+.schema-row-body .field textarea {
+  border: 1.5px solid var(--outline); background: var(--surface); border-radius: var(--radius-sm);
+  padding: 11px 12px; font-size: calc(14.5px * var(--fs)); width: 100%; outline: none; color: var(--on-surface); font-family: inherit; min-height: 84px; resize: vertical;
+}
+.schema-row-body .field textarea:focus { border-color: var(--accent-fg); }
+.schema-hint { font-size: calc(12px * var(--fs)); color: var(--on-surface-muted); margin: 0; }
+.schema-check { display: flex; align-items: center; gap: 10px; font-size: calc(14px * var(--fs)); color: var(--on-surface); }
+.schema-check input { width: 18px; height: 18px; accent-color: var(--accent-fg); }
+.schema-actions { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; }
 
 /* ===== VIEW ENTRY ===== */
 .view-body { display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px; overflow-y: auto; }
@@ -403,23 +461,23 @@ margin-top: .5vh;
   gap: 10px;
 }
 .view-row-text { min-width: 0; flex: 1; }
-.view-row-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .3px; color: var(--accent-light); margin: 0 0 3px; }
-.view-row-value { font-size: 15px; color: var(--on-surface); margin: 0; word-break: break-word; font-family: 'Roboto Mono', monospace; }
+.view-row-label { font-size: calc(11px * var(--fs)); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; color: var(--accent-label); margin: 0 0 3px; }
+.view-row-value { font-size: calc(15px * var(--fs)); color: var(--on-surface); margin: 0; word-break: break-word; font-family: 'Roboto Mono', monospace; }
 .view-row-value.masked { letter-spacing: 2px; }
 .view-row-actions { display: flex; gap: 4px; flex: none; }
 .view-row-actions button {
   border: none; background: var(--surface);
   width: 34px; height: 34px; border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
-  color: var(--accent);
+  color: var(--accent-fg);
 }
-.view-notes { white-space: pre-wrap; font-family: inherit !important; font-size: 14px !important; }
+.view-notes { white-space: pre-wrap; font-family: inherit !important; font-size: calc(14px * var(--fs)) !important; }
 
 /* ===== MENU ===== */
 .menu-row {
   display: flex; align-items: center; gap: 14px;
   width: 100%; border: none; background: none;
-  padding: 14px 4px; font-size: 15px; font-weight: 500;
+  padding: 14px 4px; font-size: calc(15px * var(--fs)); font-weight: 500;
   color: var(--on-surface);
   border-bottom: 1px solid var(--outline);
   transition: background-color .15s ease, transform .1s ease;
@@ -434,11 +492,11 @@ margin-top: .5vh;
   position: fixed;
   bottom: calc(24px + env(safe-area-inset-bottom));
   left: 50%; transform: translateX(-50%);
-  background: var(--accent-dark);
-  color: #fff;
+  background: var(--accent-deep);
+  color: var(--on-deep);
   padding: 12px 20px;
   border-radius: 30px;
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--fs));
   z-index: 100;
   box-shadow: var(--elev-2);
   max-width: 88%;
@@ -455,12 +513,12 @@ margin-top: .5vh;
 }
 .install-btn {
   display: flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,.16);
-  color: #fff;
+  background: var(--on-accent-16);
+  color: var(--on-accent);
   border: none;
   padding: 8px 14px;
   border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: calc(13px * var(--fs));
   font-weight: 600;
   cursor: pointer;
 }
@@ -472,20 +530,20 @@ margin-top: .5vh;
   top: env(safe-area-inset-top);
   left: 0; right: 0;
   display: flex; align-items: center; justify-content: center; gap: 12px;
-  background: var(--accent-dark);
-  color: #fff;
+  background: var(--accent-deep);
+  color: var(--on-deep);
   padding: 10px 16px;
-  font-size: 13px;
+  font-size: calc(13px * var(--fs));
   z-index: 110;
   box-shadow: var(--elev-2);
 }
 .update-bar button {
-  background: rgba(255,255,255,.18);
-  color: #fff;
+  background: var(--on-deep-18);
+  color: var(--on-deep);
   border: none;
   border-radius: 20px;
   padding: 5px 12px;
-  font-size: 12.5px;
+  font-size: calc(12.5px * var(--fs));
   cursor: pointer;
 }
 .update-bar button:active { transform: scale(.96); }
@@ -494,7 +552,117 @@ margin-top: .5vh;
   body { border-left: 1px solid var(--outline); border-right: 1px solid var(--outline); min-height: 100dvh; }
 }
 
+
+/* ===== COSMETICS ===== */
+.cos-block { margin-bottom: 20px; }
+.cos-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--accent-label); margin: 0 0 8px; display: flex; justify-content: space-between; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--surface-alt); padding: 4px; border-radius: var(--radius-md); }
+.seg button { display: flex; align-items: center; justify-content: center; gap: 8px; border: none; background: transparent; color: var(--on-surface); padding: 11px 8px; border-radius: 8px; font-size: 14.5px; font-weight: 600; }
+.seg button.active { background: var(--accent); color: var(--on-accent); box-shadow: var(--elev-1); }
+.cos-accent { display: flex; align-items: center; gap: 14px; }
+.cos-accent input[type=color] { width: 64px; height: 44px; padding: 0; border: 1.5px solid var(--outline); border-radius: var(--radius-sm); background: var(--surface); cursor: pointer; }
+.cos-accent code { font-size: 14px; color: var(--on-surface-muted); text-transform: uppercase; }
+.font-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.font-opt { border: 1.5px solid var(--outline); background: var(--surface); color: var(--on-surface); border-radius: var(--radius-sm); padding: 12px 10px; font-size: 15px; text-align: center; }
+.font-opt.active { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-head); font-weight: 600; }
+#cos-size { width: 100%; accent-color: var(--accent); }
+.cos-range-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--on-surface-muted); }
+.cos-preview { margin: 10px 0 0; color: var(--on-surface); font-size: calc(16px * var(--fs)); line-height: 1.3; word-break: break-word; }
 </style>
+<script>
+// Cosmetics core — runs before first paint so there is no theme flash.
+const Cosmetics = (() => {
+  const KEY = 'vault_cosmetics_v1';
+  const DEFAULTS = { theme: 'light', accent: '#3a58db', font: 'Default', size: 16 };
+  const FONTS = {
+    'Default':          { fam: "'Geomini','Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" },
+    'Montserrat':       { w: '400;500;600;700', fb: 'sans-serif' },
+    'Poppins':          { w: '400;500;600;700', fb: 'sans-serif' },
+    'Playfair Display': { w: '400;500;600;700', fb: 'serif' },
+    'Lora':             { w: '400;500;600;700', fb: 'serif' },
+    'Quicksand':        { w: '400;500;600;700', fb: 'sans-serif' },
+    'Kalam':            { w: '400;700',         fb: 'cursive' },
+    'Comfortaa':        { w: '400;500;600;700', fb: 'sans-serif' },
+  };
+  const ACCENT_VARS = ['--accent','--accent-light','--accent-lighter','--accent-dark','--accent-tint','--accent-tint-2',
+    '--accent-fg','--accent-head','--accent-label','--accent-deep','--on-accent','--on-deep','--on-accent-16','--on-deep-18',
+    '--pi-a','--on-pi-a','--pi-b','--on-pi-b'];
+
+  const h2r = h => { h = h.replace('#',''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); return [0,2,4].map(i => parseInt(h.substr(i,2),16)); };
+  const r2h = r => '#' + r.map(v => Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('');
+  const mix = (a,b,t) => { const x = h2r(a), y = h2r(b); return r2h(x.map((v,i) => v + (y[i]-v)*t)); };
+  const lum = h => { const [r,g,b] = h2r(h).map(v => { v /= 255; return v <= .03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4); }); return .2126*r + .7152*g + .0722*b; };
+  const cr = (a,b) => { const x = lum(a), y = lum(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); };
+  const on = h => cr('#ffffff',h) >= cr('#111111',h) ? '#ffffff' : '#111111';
+  const rgba = (h,a) => { const [r,g,b] = h2r(h); return `rgba(${r},${g},${b},${a})`; };
+  const ensure = (c,bg,min,toward) => { for (let i = 0; i < 24 && cr(c,bg) < min; i++) c = mix(c,toward,.06); return c; };
+
+  const validHex = v => typeof v === 'string' && /^#[0-9a-fA-F]{6}$/.test(v);
+  function load() {
+    try {
+      const o = JSON.parse(localStorage.getItem(KEY) || '{}');
+      return {
+        theme: o.theme === 'dark' ? 'dark' : 'light',
+        accent: validHex(o.accent) ? o.accent.toLowerCase() : DEFAULTS.accent,
+        font: FONTS[o.font] ? o.font : DEFAULTS.font,
+        size: Math.min(48, Math.max(8, parseInt(o.size, 10) || DEFAULTS.size)),
+      };
+    } catch (e) { return { ...DEFAULTS }; }
+  }
+  let state = load();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  const loaded = new Set();
+  function addLink(href) {
+    if (loaded.has(href)) return; loaded.add(href);
+    const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = href; document.head.appendChild(l);
+  }
+  const fam = n => `family=${n.replace(/ /g,'+')}:wght@${FONTS[n].w}`;
+  function ensureFont(n) { if (FONTS[n] && FONTS[n].w) addLink(`https://fonts.googleapis.com/css2?${fam(n)}&display=swap`); }
+  function preloadAll() { ensureFont.__all || (ensureFont.__all = 1, Object.keys(FONTS).forEach(ensureFont)); }
+
+  function apply() {
+    const root = document.documentElement, st = root.style, s = state;
+    const dark = s.theme === 'dark';
+    root.dataset.theme = dark ? 'dark' : 'light';
+
+    if (!dark && s.accent === DEFAULTS.accent) {
+      ACCENT_VARS.forEach(k => st.removeProperty(k));
+    } else {
+      const a = s.accent, W = '#ffffff', K = '#000000';
+      const surf = dark ? '#1a1b29' : '#ffffff', bg = dark ? '#101119' : '#f6f6fb';
+      const light = mix(a, W, dark ? .3 : .25), lighter = mix(a, W, .5), deep = mix(a, K, .35);
+      const v = {
+        '--accent': a, '--accent-light': light, '--accent-lighter': lighter, '--accent-dark': deep,
+        '--accent-tint':   dark ? mix(a,bg,.85) : mix(a,W,.9),
+        '--accent-tint-2': dark ? mix(a,bg,.75) : mix(a,W,.8),
+        '--accent-fg':    dark ? ensure(a, surf, 4.5, W) : ensure(a, surf, 4.5, K),
+        '--accent-head':  dark ? ensure(mix(a,W,.45), surf, 4.5, W) : ensure(deep, surf, 4.5, K),
+        '--accent-label': dark ? ensure(light, surf, 3.5, W) : ensure(light, surf, 3.5, K),
+        '--accent-deep': deep,
+        '--on-accent': on(a), '--on-deep': on(deep),
+        '--on-accent-16': rgba(on(a), .16), '--on-deep-18': rgba(on(deep), .18),
+        '--pi-a': light, '--on-pi-a': on(light), '--pi-b': deep, '--on-pi-b': on(deep),
+      };
+      for (const k in v) st.setProperty(k, v[k]);
+    }
+
+    if (s.font === 'Default') st.removeProperty('--font');
+    else { ensureFont(s.font); st.setProperty('--font', `'${s.font}', ${FONTS[s.font].fb}`); }
+
+    if (s.size === DEFAULTS.size) st.removeProperty('--fs');
+    else st.setProperty('--fs', String(s.size / DEFAULTS.size));
+
+    const m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', s.accent);
+  }
+
+  function set(patch) { state = { ...state, ...patch }; save(); apply(); }
+  function reset() { state = { ...DEFAULTS }; save(); apply(); }
+  apply();
+  return { get: () => ({ ...state }), set, reset, preloadAll, FONTS, DEFAULTS };
+})();
+</script>
 </head>
 <body>
 
@@ -606,22 +774,47 @@ margin-top: .5vh;
         <span class="picker-icon" style="background:var(--accent)"><span class="material-symbols-outlined">key</span></span>Password
       </button>
       <button class="picker-item" data-cat="bank">
-        <span class="picker-icon" style="background:var(--accent-light)"><span class="material-symbols-outlined">account_balance</span></span>Bank
+        <span class="picker-icon" style="background:var(--pi-a);color:var(--on-pi-a)"><span class="material-symbols-outlined">account_balance</span></span>Bank
       </button>
       <button class="picker-item" data-cat="card">
-        <span class="picker-icon" style="background:var(--accent-dark)"><span class="material-symbols-outlined">credit_card</span></span>Card
+        <span class="picker-icon" style="background:var(--pi-b);color:var(--on-pi-b)"><span class="material-symbols-outlined">credit_card</span></span>Card
       </button>
       <button class="picker-item" data-cat="document">
         <span class="picker-icon" style="background:var(--accent)"><span class="material-symbols-outlined">draft</span></span>Documents
       </button>
       <button class="picker-item" data-cat="token">
-        <span class="picker-icon" style="background:var(--accent-light)"><span class="material-symbols-outlined">token</span></span>Token
+        <span class="picker-icon" style="background:var(--pi-a);color:var(--on-pi-a)"><span class="material-symbols-outlined">token</span></span>Token
       </button>
       <button class="picker-item" data-cat="note">
-        <span class="picker-icon" style="background:var(--accent-dark)"><span class="material-symbols-outlined">stylus_note</span></span>Notes
+        <span class="picker-icon" style="background:var(--pi-b);color:var(--on-pi-b)"><span class="material-symbols-outlined">stylus_note</span></span>Notes
       </button>
     </div>
-    <button class="btn btn-ghost btn-block" id="picker-cancel">Cancel</button>
+    <p class="picker-hint">Long-press a category to edit its fields</p>
+    <button class="btn btn-ghost btn-block" id="picker-cancel">Close</button>
+  </div>
+</div>
+
+<!-- ============ FIELD EDITOR SHEET (long-press a category) ============ -->
+<div id="sheet-schema" class="sheet-overlay hidden">
+  <div class="sheet sheet-tall">
+    <div class="sheet-header">
+      <div class="sheet-header-side">
+        <button id="schema-close" class="icon-btn" aria-label="Close">
+          <span class="material-symbols-outlined" style="color:var(--danger)">close</span>
+        </button>
+      </div>
+      <h2 id="schema-title">Edit fields</h2>
+      <div class="sheet-header-side sheet-header-side--end">
+        <button id="schema-reset" class="icon-btn" aria-label="Reset to default">
+          <span class="material-symbols-outlined" style="color:var(--accent-fg)">restart_alt</span>
+        </button>
+      </div>
+    </div>
+    <div id="schema-list" class="schema-list"></div>
+    <div class="sheet-footer schema-actions">
+      <button type="button" id="schema-add" class="btn btn-ghost btn-block">Add field</button>
+      <button type="button" id="schema-save" class="btn btn-primary btn-block">Save changes</button>
+    </div>
   </div>
 </div>
 
@@ -663,7 +856,7 @@ margin-top: .5vh;
           <span class="material-symbols-outlined" style="color:var(--danger)">delete</span>
         </button>
         <button id="view-edit" class="icon-btn" aria-label="Edit">
-          <span class="material-symbols-outlined" style="color:var(--accent)">edit</span>
+          <span class="material-symbols-outlined" style="color:var(--accent-fg)">edit</span>
         </button>
       </div>
     </div>
@@ -677,20 +870,24 @@ margin-top: .5vh;
     <div class="sheet-handle"></div>
     <h2>Menu</h2>
     <button class="menu-row" id="menu-export">
-      <span class="material-symbols-outlined" style="color:var(--accent)">download</span>
+      <span class="material-symbols-outlined" style="color:var(--accent-fg)">download</span>
       Backup as CSV
     </button>
     <button class="menu-row" id="menu-import">
-      <span class="material-symbols-outlined" style="color:var(--accent)">upload</span>
+      <span class="material-symbols-outlined" style="color:var(--accent-fg)">upload</span>
       Restore from CSV
     </button>
     <button class="menu-row" id="menu-biometric-toggle">
-      <span class="material-symbols-outlined" style="color:var(--accent)">fingerprint</span>
+      <span class="material-symbols-outlined" style="color:var(--accent-fg)">fingerprint</span>
       <span id="menu-biometric-label">Enable biometric unlock</span>
     </button>
     <button class="menu-row" id="menu-change-pass">
-      <span class="material-symbols-outlined" style="color:var(--accent)">password</span>
+      <span class="material-symbols-outlined" style="color:var(--accent-fg)">password</span>
       Change master password
+    </button>
+    <button class="menu-row" id="menu-cosmetics">
+      <span class="material-symbols-outlined" style="color:var(--accent-fg)">lens_blur</span>
+      Cosmetics
     </button>
     <button class="menu-row danger" id="menu-lock">
       <span class="material-symbols-outlined" style="color:var(--danger)">lock</span>
@@ -698,6 +895,45 @@ margin-top: .5vh;
     </button>
     <input type="file" id="import-file-input" accept=".csv" class="hidden" />
     <button class="btn btn-ghost btn-block" id="menu-cancel">Close</button>
+  </div>
+</div>
+
+<!-- ============ COSMETICS SHEET ============ -->
+<div id="sheet-cosmetics" class="sheet-overlay hidden">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Cosmetics</h2>
+
+    <div class="cos-block">
+      <p class="cos-label">Theme</p>
+      <div class="seg" id="cos-theme">
+        <button type="button" data-v="light"><span class="material-symbols-outlined">light_mode</span>Light</button>
+        <button type="button" data-v="dark"><span class="material-symbols-outlined">dark_mode</span>Dark</button>
+      </div>
+    </div>
+
+    <div class="cos-block">
+      <p class="cos-label">Accent colour</p>
+      <div class="cos-accent">
+        <input type="color" id="cos-accent" aria-label="Accent colour" />
+        <code id="cos-accent-hex"></code>
+      </div>
+    </div>
+
+    <div class="cos-block">
+      <p class="cos-label">Font</p>
+      <div class="font-grid" id="cos-fonts"></div>
+    </div>
+
+    <div class="cos-block">
+      <p class="cos-label">Font size <span id="cos-size-val"></span></p>
+      <input type="range" id="cos-size" min="8" max="48" step="1" />
+      <div class="cos-range-ends"><span>8px</span><span>48px</span></div>
+      <p id="cos-preview" class="cos-preview">The quick brown fox jumps over 1234567890</p>
+    </div>
+
+    <button class="btn btn-ghost btn-block" id="cos-reset">Reset to defaults</button>
+    <button class="btn btn-ghost btn-block" id="cos-close" style="margin-top:10px">Close</button>
   </div>
 </div>
 
@@ -856,12 +1092,19 @@ const SEARCH_FIELD = {
   note: 'label',
 };
 
+// Title shown in list/view: "Name — Holder" for bank & card (holder optional)
+function itemTitle(item) {
+  const name = item.fields.label || '';
+  const holder = (item.cat === 'bank' || item.cat === 'card') ? (item.fields.holder || '').trim() : '';
+  return name && holder ? `${name} — ${holder}` : name;
+}
+
 function iconHtml(name) { return `<span class="material-symbols-outlined">${name}</span>`; }
 
 const DOC_LABEL_OPTIONS = ['Aadhaar Card', 'PAN Card', 'Voter Card', 'DL Card', 'RC Card', 'Passport'];
 
 // field schema per category: [{key,label,type,secret}]
-const SCHEMAS = {
+const DEFAULT_SCHEMAS = {
   password: [
     { key: 'label', label: 'Site / App name', type: 'text', required: true, placeholder: 'e.g. Gmail, Netflix' },
     { key: 'username', label: 'Username / Email', type: 'text', placeholder: 'e.g. jane@email.com' },
@@ -871,6 +1114,7 @@ const SCHEMAS = {
   ],
   bank: [
     { key: 'label', label: 'Bank / Account name', type: 'text', required: true, placeholder: 'e.g. HDFC Savings' },
+    { key: 'holder', label: 'Account holder', type: 'text', placeholder: 'Enter account holder name' },
     { key: 'accountNumber', label: 'Account number', type: 'text', secret: true, placeholder: 'Enter account number' },
     { key: 'pin', label: 'Net Banking Password', type: 'password', secret: true, placeholder: 'Enter password' },
     { key: 'ifsc', label: 'IFSC / Branch code', type: 'text', placeholder: 'e.g. HDFC0001234' },
@@ -878,11 +1122,12 @@ const SCHEMAS = {
   ],
   card: [
     { key: 'label', label: 'Card name', type: 'text', required: true, placeholder: 'e.g. HDFC Millennia' },
+    { key: 'holder', label: 'Card holder', type: 'text', placeholder: 'Enter card holder name' },
     { key: 'cardType', label: 'Card type', type: 'select', options: ['Credit', 'Debit'], placeholder: 'Select card type' },
     { key: 'cardNumber', label: 'Card number', type: 'text', secret: true, placeholder: 'Enter 16-digit card number', maxlength: 16, inputmode: 'numeric' },
     { key: 'expiry', label: 'Expiry (MM/YY)', type: 'text', placeholder: 'e.g. 08/29', format: 'expiry', maxlength: 5, inputmode: 'numeric' },
-    { key: 'cvv', label: 'CVV', type: 'password', secret: true, placeholder: 'Enter CVV' },
-    { key: 'pin', label: 'ATM PIN', type: 'password', secret: true, placeholder: 'Enter ATM PIN' },
+    { key: 'cvv', label: 'CVV', type: 'numeric', secret: true, placeholder: 'Enter CVV', maxlength: 4 },
+    { key: 'pin', label: 'ATM PIN', type: 'numeric', secret: true, placeholder: 'Enter ATM PIN', maxlength: 6 },
     { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Add any extra notes' },
   ],
   document: [
@@ -901,6 +1146,70 @@ const SCHEMAS = {
     { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Write your note here' },
   ],
 };
+
+// Selectable field types in the field editor.
+const FIELD_TYPES = {
+  text: 'Alphanumeric',
+  numeric: 'Numeric',
+  password: 'Password',
+  email: 'E-Mail',
+  phone: 'Phone',
+  url: 'URL',
+  textarea: 'Multi-line text',
+  select: 'Dropdown',
+};
+const BAD_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+// Whitelists/normalises a field list (from the vault, a backup file or the editor). Returns null if unusable.
+function sanitizeSchema(arr) {
+  if (!Array.isArray(arr)) return null;
+  const out = [], seen = new Set();
+  for (const r of arr) {
+    if (!r || typeof r !== 'object') continue;
+    const key = String(r.key || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40);
+    if (!key || BAD_KEYS.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    let type = r.digitsOnly ? 'numeric' : r.type;
+    if (!FIELD_TYPES[type]) type = 'text';
+    const plain = type !== 'textarea' && type !== 'select';
+    const f = { key, label: String(r.label || '').trim().slice(0, 60) || key, type };
+    if (r.required || key === 'label') f.required = true;
+    if (type === 'password' || (plain && r.secret)) f.secret = true;
+    if (type === 'password' && r.generate) f.generate = true;
+    const ph = String(r.placeholder || '').slice(0, 80);
+    if (ph) f.placeholder = ph;
+    const ml = parseInt(r.maxlength, 10);
+    if (plain && ml > 0) f.maxlength = Math.min(ml, 1000);
+    if (type === 'select') {
+      let opts = (Array.isArray(r.options) ? r.options : []).map(o => String(o).trim().slice(0, 60)).filter(Boolean);
+      opts = [...new Set(opts)].slice(0, 50);
+      f.options = opts.length ? opts : ['Option 1'];
+    }
+    if (type === 'text' && r.format === 'expiry') f.format = 'expiry';
+    if (type === 'text' && ['numeric', 'tel', 'email', 'url'].includes(r.inputmode)) f.inputmode = r.inputmode;
+    out.push(f);
+  }
+  const li = out.findIndex(f => f.key === 'label');
+  if (li < 0) return null;            // every category must keep its title field
+  if (li > 0) out.unshift(out.splice(li, 1)[0]);
+  return out;
+}
+
+// Live schemas = defaults overridden per-category by the user's customisations (stored encrypted in the vault).
+const SCHEMAS = {};
+function applySchemas() {
+  const custom = (typeof vault !== 'undefined' && vault && vault.schemas) || {};
+  for (const cat of Object.keys(DEFAULT_SCHEMAS)) {
+    const clean = sanitizeSchema(custom[cat]);
+    SCHEMAS[cat] = JSON.parse(JSON.stringify(clean || sanitizeSchema(DEFAULT_SCHEMAS[cat])));
+  }
+}
+applySchemas();
+
+const isSecretField = (f) => f.type === 'password' || !!f.secret;
+const fieldInputType = (f) => isSecretField(f) ? 'password' : ({ email: 'email', url: 'url', phone: 'tel' }[f.type] || 'text');
+const fieldInputMode = (f) => f.inputmode || ({ numeric: 'numeric', phone: 'tel', email: 'email', url: 'url' }[f.type] || '');
+const FIELD_FILTERS = { numeric: /\D/g, phone: /[^\d+\-\s()]/g };
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -1038,6 +1347,7 @@ $('#form-setup') && ($('#form-setup').onsubmit = async (e) => {
   const { key, saltB64: s } = await VaultCrypto.deriveKey(p1, null);
   masterKey = key; saltB64 = s;
   vault = { items: [] };
+  applySchemas();
   await persistVault();
   enterApp();
   toast('Vault created');
@@ -1060,6 +1370,7 @@ async function tryUnlockWithPassword(pass) {
     const decoded = await VaultCrypto.decryptJSON(key, raw);
     masterKey = key; saltB64 = raw.saltB64;
     vault = decoded;
+    applySchemas();
     enterApp();
     return true;
   } catch (e) {
@@ -1126,6 +1437,90 @@ function enterApp() {
   show($('#screen-app'));
   renderList();
   updateBioMenuLabel();
+  startAutoLock();
+}
+
+// ================= AUTO-LOCK =================
+// [E] Lock after 600s of no user interaction.
+// [F] Lock after 120s with the app minimised / backgrounded / tab hidden.
+// Wall-clock timestamps are used as well as timers: mobile browsers freeze
+// timers while backgrounded, so a bare setTimeout would never fire.
+const IDLE_LOCK_MS = 600 * 1000;
+const BACKGROUND_LOCK_MS = 120 * 1000;
+let idleTimer = null, bgTimer = null;
+let lastActivity = 0;
+let hiddenAt = 0;
+let autoLockWired = false;
+
+function isUnlocked() { return masterKey !== null; }
+
+function lockVault(reason) {
+  stopAutoLock();
+  masterKey = null; saltB64 = null;
+  vault = { items: [] };
+  activeItemId = null;
+  applySchemas();
+  // wipe decrypted data from the DOM
+  $('#vault-list').innerHTML = '';
+  $('#view-body').innerHTML = '';
+  $('#form-editor').innerHTML = '';
+  $('#schema-list').innerHTML = '';
+  $('#search-input').value = '';
+  $('#unlock-pass').value = '';
+  $('#unlock-error').textContent = '';
+  ['#sheet-picker', '#sheet-schema', '#sheet-editor', '#sheet-view', '#sheet-menu', '#sheet-cosmetics']
+    .forEach(id => hide($(id)));
+  hide($('#screen-app'));
+  show($('#screen-unlock'));
+  checkBiometricAvailable();
+  if (reason === 'idle') toast('Locked after 10 minutes of inactivity');
+  else if (reason === 'background') toast('Locked after 2 minutes in the background');
+}
+
+function resetIdleTimer() {
+  if (!isUnlocked()) return;
+  lastActivity = Date.now();
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => lockVault('idle'), IDLE_LOCK_MS);
+}
+
+function onBackgrounded() {
+  if (!isUnlocked() || hiddenAt) return;
+  hiddenAt = Date.now();
+  clearTimeout(bgTimer);
+  bgTimer = setTimeout(() => lockVault('background'), BACKGROUND_LOCK_MS);
+}
+
+function onForegrounded() {
+  const away = hiddenAt ? Date.now() - hiddenAt : 0;
+  hiddenAt = 0;
+  clearTimeout(bgTimer);
+  if (!isUnlocked()) return;
+  if (away >= BACKGROUND_LOCK_MS) { lockVault('background'); return; }
+  if (Date.now() - lastActivity >= IDLE_LOCK_MS) { lockVault('idle'); return; }
+  resetIdleTimer();
+}
+
+function startAutoLock() {
+  hiddenAt = 0;
+  resetIdleTimer();
+  if (autoLockWired) return;
+  autoLockWired = true;
+  ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart', 'scroll', 'input']
+    .forEach(t => document.addEventListener(t, resetIdleTimer, { capture: true, passive: true }));
+  document.addEventListener('visibilitychange', () => {
+    document.visibilityState === 'hidden' ? onBackgrounded() : onForegrounded();
+  });
+  // iOS Safari / PWA: pagehide fires when switching apps; pageshow on return (incl. bfcache)
+  window.addEventListener('pagehide', onBackgrounded);
+  window.addEventListener('pageshow', onForegrounded);
+  document.addEventListener('freeze', onBackgrounded);
+  document.addEventListener('resume', onForegrounded);
+}
+
+function stopAutoLock() {
+  clearTimeout(idleTimer); clearTimeout(bgTimer);
+  idleTimer = bgTimer = null; hiddenAt = 0;
 }
 
 // ================= LIST RENDERING =================
@@ -1144,10 +1539,28 @@ function wireEvents() {
   $('#picker-cancel').addEventListener('click', () => hide($('#sheet-picker')));
   $('#sheet-picker').addEventListener('click', (e) => { if (e.target.id === 'sheet-picker') hide($('#sheet-picker')); });
 
-  $$('.picker-item').forEach(btn => btn.addEventListener('click', () => {
-    hide($('#sheet-picker'));
-    openEditor(btn.dataset.cat, null);
-  }));
+  $$('.picker-item').forEach(btn => {
+    let timer = null, fired = false, sx = 0, sy = 0;
+    const cancel = () => { clearTimeout(timer); timer = null; };
+    btn.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      fired = false; sx = e.clientX; sy = e.clientY; cancel();
+      timer = setTimeout(() => {
+        timer = null; fired = true;
+        if (navigator.vibrate) navigator.vibrate(20);
+        openSchemaEditor(btn.dataset.cat);
+      }, 500);
+    });
+    btn.addEventListener('pointermove', (e) => { if (timer && Math.hypot(e.clientX - sx, e.clientY - sy) > 10) cancel(); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(t => btn.addEventListener(t, cancel));
+    btn.addEventListener('contextmenu', (e) => e.preventDefault());
+    btn.addEventListener('click', (e) => {
+      if (fired) { fired = false; e.preventDefault(); return; }   // the long-press already opened the field editor
+      hide($('#sheet-picker'));
+      openEditor(btn.dataset.cat, null);
+    });
+  });
+  wireSchemaEditor();
 
   $('#editor-close').addEventListener('click', () => hide($('#sheet-editor')));
   $('#editor-delete').addEventListener('click', onDeleteEntry);
@@ -1164,19 +1577,62 @@ function wireEvents() {
   $('#menu-cancel').addEventListener('click', () => hide($('#sheet-menu')));
   $('#sheet-menu').addEventListener('click', (e) => { if (e.target.id === 'sheet-menu') hide($('#sheet-menu')); });
 
-  $('#menu-lock').addEventListener('click', () => {
-    masterKey = null; vault = { items: [] };
-    hide($('#sheet-menu'));
-    hide($('#screen-app'));
-    show($('#screen-unlock'));
-    checkBiometricAvailable();
-  });
+  $('#menu-lock').addEventListener('click', () => lockVault());
+  wireCosmetics();
 
   $('#menu-export').addEventListener('click', exportCSV);
   $('#menu-import').addEventListener('click', () => $('#import-file-input').click());
   $('#import-file-input').addEventListener('change', importCSV);
   $('#menu-biometric-toggle').addEventListener('click', toggleBiometric);
   $('#menu-change-pass').addEventListener('click', changeMasterPassword);
+}
+
+
+// ================= COSMETICS UI =================
+function renderCosmetics() {
+  const s = Cosmetics.get();
+  $$('#cos-theme button').forEach(b => b.classList.toggle('active', b.dataset.v === s.theme));
+  $('#cos-accent').value = s.accent;
+  $('#cos-accent-hex').textContent = s.accent;
+  $$('#cos-fonts .font-opt').forEach(b => b.classList.toggle('active', b.dataset.f === s.font));
+  $('#cos-size').value = s.size;
+  $('#cos-size-val').textContent = s.size + 'px' + (s.size === 16 ? ' (default)' : '');
+}
+
+function wireCosmetics() {
+  const grid = $('#cos-fonts');
+  Object.keys(Cosmetics.FONTS).forEach(name => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'font-opt'; b.dataset.f = name;
+    b.textContent = name === 'Default' ? 'Default' : name;
+    if (name !== 'Default') b.style.fontFamily = `'${name}', ${Cosmetics.FONTS[name].fb}`;
+    grid.appendChild(b);
+  });
+  grid.addEventListener('click', (e) => {
+    const b = e.target.closest('.font-opt'); if (!b) return;
+    Cosmetics.set({ font: b.dataset.f }); renderCosmetics();
+  });
+  $('#cos-theme').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    Cosmetics.set({ theme: b.dataset.v }); renderCosmetics();
+  });
+  $('#cos-accent').addEventListener('input', (e) => {
+    Cosmetics.set({ accent: e.target.value.toLowerCase() });
+    $('#cos-accent-hex').textContent = e.target.value;
+  });
+  $('#cos-size').addEventListener('input', (e) => {
+    Cosmetics.set({ size: parseInt(e.target.value, 10) });
+    $('#cos-size-val').textContent = e.target.value + 'px' + (e.target.value === '16' ? ' (default)' : '');
+  });
+  $('#cos-reset').addEventListener('click', () => { Cosmetics.reset(); renderCosmetics(); toast('Cosmetics reset'); });
+  $('#cos-close').addEventListener('click', () => hide($('#sheet-cosmetics')));
+  $('#sheet-cosmetics').addEventListener('click', (e) => { if (e.target.id === 'sheet-cosmetics') hide($('#sheet-cosmetics')); });
+  $('#menu-cosmetics').addEventListener('click', () => {
+    Cosmetics.preloadAll();
+    renderCosmetics();
+    hide($('#sheet-menu'));
+    show($('#sheet-cosmetics'));
+  });
 }
 
 function renderList() {
@@ -1187,7 +1643,9 @@ function renderList() {
     const catOk = currentCatFilter === 'all' || item.cat === currentCatFilter;
     if (!catOk) return false;
     if (!q) return true;
-    const hay = (item.fields[SEARCH_FIELD[item.cat]] || '').toLowerCase();
+    const sk = SEARCH_FIELD[item.cat];
+    const hasSk = SCHEMAS[item.cat].some(f => f.key === sk);
+    const hay = ((hasSk ? item.fields[sk] : item.fields.label) || '').toLowerCase();
     return hay.includes(q);
   }).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
@@ -1207,7 +1665,7 @@ function renderList() {
     card.innerHTML = `
       <div class="item-icon">${iconHtml(CATS[item.cat].icon)}</div>
       <div class="item-text">
-        <p class="item-title">${escapeHtml(item.fields.label || 'Untitled')}</p>
+        <p class="item-title">${escapeHtml(itemTitle(item) || 'Untitled')}</p>
         <p class="item-sub">${escapeHtml(sub || CATS[item.cat].label)}</p>
       </div>
       <span class="item-cat-tag">${escapeHtml(catTag)}</span>
@@ -1239,27 +1697,31 @@ function openEditor(cat, item) {
   for (const f of schema) {
     const wrap = document.createElement('label');
     wrap.className = 'field';
-    const value = item ? escapeHtml(item.fields[f.key] || '') : '';
+    const raw = item ? String(item.fields[f.key] || '') : '';
+    const value = escapeHtml(raw);
+    const L = escapeHtml(f.label), PH = escapeHtml(f.placeholder || '');
+    const common = `name="${f.key}" placeholder="${PH}" ${f.required ? 'required' : ''} ${f.maxlength ? `maxlength="${f.maxlength}"` : ''} ${fieldInputMode(f) ? `inputmode="${fieldInputMode(f)}"` : ''}`;
     if (f.type === 'select') {
-      const opts = f.options.map(o => `<option value="${escapeHtml(o)}" ${value === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('');
-      wrap.innerHTML = `<span>${f.label}</span>
+      const list = f.options.includes(raw) || !raw ? f.options : [...f.options, raw]; // keep an old value that is no longer an option
+      const opts = list.map(o => `<option value="${escapeHtml(o)}" ${raw === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('');
+      wrap.innerHTML = `<span>${L}</span>
         <select name="${f.key}" ${f.required ? 'required' : ''}>
-          <option value="" disabled ${value ? '' : 'selected'}>${f.placeholder || 'Select an option'}</option>
+          <option value="" disabled ${raw ? '' : 'selected'}>${PH || 'Select an option'}</option>
           ${opts}
         </select>`;
     } else if (f.type === 'textarea') {
-      wrap.innerHTML = `<span>${f.label}</span><textarea name="${f.key}" placeholder="${f.placeholder || ''}">${value}</textarea>`;
-    } else if (f.secret) {
-      wrap.innerHTML = `<span>${f.label}</span>
+      wrap.innerHTML = `<span>${L}</span><textarea name="${f.key}" placeholder="${PH}" ${f.required ? 'required' : ''}>${value}</textarea>`;
+    } else if (isSecretField(f)) {
+      wrap.innerHTML = `<span>${L}</span>
         <div class="pass-field-wrap">
-          <input type="password" name="${f.key}" value="${value}" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''} ${f.maxlength ? `maxlength="${f.maxlength}"` : ''} ${f.inputmode ? `inputmode="${f.inputmode}"` : ''} />
+          <input type="password" value="${value}" ${common} />
           <div class="pass-tools">
             ${f.generate ? `<button type="button" class="btn-gen" title="Generate"><span class="material-symbols-outlined">casino</span></button>` : ''}
             <button type="button" class="btn-toggle" title="Show"><span class="material-symbols-outlined">visibility</span></button>
           </div>
         </div>`;
     } else {
-      wrap.innerHTML = `<span>${f.label}</span><input type="text" name="${f.key}" value="${value}" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''} ${f.maxlength ? `maxlength="${f.maxlength}"` : ''} ${f.inputmode ? `inputmode="${f.inputmode}"` : ''} />`;
+      wrap.innerHTML = `<span>${L}</span><input type="${fieldInputType(f)}" value="${value}" ${common} />`;
     }
     form.appendChild(wrap);
   }
@@ -1274,6 +1736,14 @@ function openEditor(cat, item) {
       });
     }
   }
+
+  schema.filter(f => FIELD_FILTERS[f.type]).forEach(f => {
+    const el = form.querySelector(`[name="${f.key}"]`);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      el.value = el.value.replace(FIELD_FILTERS[f.type], '').slice(0, f.maxlength || undefined);
+    });
+  });
 
   form.querySelectorAll('.btn-toggle').forEach(btn => btn.addEventListener('click', () => {
     const input = btn.closest('.pass-field-wrap').querySelector('input');
@@ -1335,7 +1805,7 @@ function generatePassword() {
 // ================= VIEW ENTRY =================
 function openView(item) {
   activeItemId = item.id;
-  $('#view-title').textContent = item.fields.label || CATS[item.cat].label;
+  $('#view-title').textContent = itemTitle(item) || CATS[item.cat].label;
   const body = $('#view-body');
   body.innerHTML = '';
   const schema = SCHEMAS[item.cat];
@@ -1345,10 +1815,10 @@ function openView(item) {
     if (!val && f.key !== 'label') continue;
     const row = document.createElement('div');
     row.className = 'view-row';
-    const isSecret = !!f.secret;
+    const isSecret = isSecretField(f);
     row.innerHTML = `
       <div class="view-row-text">
-        <p class="view-row-label">${f.label}</p>
+        <p class="view-row-label">${escapeHtml(f.label)}</p>
         <p class="view-row-value ${isSecret ? 'masked' : ''} ${f.type === 'textarea' ? 'view-notes' : ''}" data-real="${escapeHtml(val)}">${isSecret ? '••••••••' : escapeHtml(val)}</p>
       </div>
       <div class="view-row-actions">
@@ -1378,6 +1848,186 @@ function openView(item) {
   show($('#sheet-view'));
 }
 
+// ================= FIELD EDITOR (long-press a category) =================
+let schemaCat = null, schemaDraft = [], schemaDirty = false, schemaOpen = new Set();
+
+function openSchemaEditor(cat) {
+  schemaCat = cat;
+  schemaDraft = JSON.parse(JSON.stringify(SCHEMAS[cat]));
+  schemaDirty = false;
+  schemaOpen = new Set();
+  $('#schema-title').textContent = CATS[cat].label + ' fields';
+  renderSchemaList();
+  show($('#sheet-schema'));
+}
+
+function schemaSubtitle(f) {
+  const parts = [FIELD_TYPES[f.type]];
+  if (f.type !== 'password' && isSecretField(f)) parts.push('hidden');
+  if (f.required) parts.push('required');
+  return parts.join(' · ');
+}
+
+function schemaRowHtml(f, i, n) {
+  const locked = f.key === 'label';
+  const plain = f.type !== 'textarea' && f.type !== 'select';
+  const typeOpts = Object.entries(FIELD_TYPES)
+    .filter(([k]) => !locked || k === 'text' || k === 'select')
+    .map(([k, v]) => `<option value="${k}" ${f.type === k ? 'selected' : ''}>${v}</option>`).join('');
+  return `
+    <div class="schema-row-head">
+      <button type="button" class="schema-row-toggle" data-act="toggle">
+        <span class="schema-row-name">${escapeHtml(f.label) || 'Untitled'}</span><small>${schemaSubtitle(f)}</small>
+      </button>
+      <button type="button" class="icon-btn" data-act="up" aria-label="Move up" ${i <= 1 ? 'disabled' : ''}><span class="material-symbols-outlined">arrow_upward</span></button>
+      <button type="button" class="icon-btn" data-act="down" aria-label="Move down" ${locked || i === n - 1 ? 'disabled' : ''}><span class="material-symbols-outlined">arrow_downward</span></button>
+      <button type="button" class="icon-btn" data-act="del" aria-label="Delete field" ${locked ? 'disabled' : ''}><span class="material-symbols-outlined" style="color:var(--danger)">delete</span></button>
+    </div>
+    <div class="schema-row-body">
+      <label class="field"><span>Label</span><input type="text" data-p="label" maxlength="60" value="${escapeHtml(f.label)}" /></label>
+      <label class="field"><span>Input type</span><select data-p="type">${typeOpts}</select></label>
+      <label class="field"><span>Placeholder</span><input type="text" data-p="placeholder" maxlength="80" value="${escapeHtml(f.placeholder || '')}" /></label>
+      ${plain ? `<label class="field"><span>Max length (blank = no limit)</span><input type="number" data-p="maxlength" min="1" max="1000" value="${f.maxlength || ''}" /></label>` : ''}
+      ${f.type === 'select' ? `<label class="field"><span>Options (one per line)</span><textarea data-p="options">${escapeHtml((f.options || []).join('\n'))}</textarea></label>` : ''}
+      ${locked ? `<p class="schema-hint">This is the entry's title field: it can be renamed but not removed or made optional.</p>` : `
+      <label class="schema-check"><input type="checkbox" data-p="required" ${f.required ? 'checked' : ''} /> Required</label>`}
+      ${plain && !locked && f.type !== 'password' ? `<label class="schema-check"><input type="checkbox" data-p="secret" ${f.secret ? 'checked' : ''} /> Hide value (mask like a password)</label>` : ''}
+      ${f.type === 'password' ? `<label class="schema-check"><input type="checkbox" data-p="generate" ${f.generate ? 'checked' : ''} /> Show password generator</label>` : ''}
+    </div>`;
+}
+
+function renderSchemaList(scrollKey) {
+  const list = $('#schema-list');
+  list.innerHTML = '<p class="schema-note">Tap a field to edit it. Nothing is saved until you press Save changes.</p>';
+  schemaDraft.forEach((f, i) => {
+    const row = document.createElement('div');
+    row.className = 'schema-row' + (schemaOpen.has(f.key) ? ' open' : '');
+    row.dataset.key = f.key;
+    row.innerHTML = schemaRowHtml(f, i, schemaDraft.length);
+    list.appendChild(row);
+  });
+  if (scrollKey) {
+    const row = list.querySelector(`.schema-row[data-key="${scrollKey}"]`);
+    if (row) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+}
+
+function onSchemaInput(e) {
+  const t = e.target, p = t.dataset.p;
+  if (!p) return;
+  const row = t.closest('.schema-row');
+  const f = schemaDraft.find(x => x.key === row.dataset.key);
+  if (!f) return;
+  schemaDirty = true;
+  if (p === 'label') {
+    f.label = t.value;
+    row.querySelector('.schema-row-name').textContent = t.value.trim() || 'Untitled';
+  } else if (p === 'placeholder') {
+    f.placeholder = t.value;
+  } else if (p === 'maxlength') {
+    const n = parseInt(t.value, 10);
+    if (n > 0) f.maxlength = Math.min(n, 1000); else delete f.maxlength;
+  } else if (p === 'options') {
+    f.options = t.value.split('\n').map(x => x.trim()).filter(Boolean);
+  } else if (p === 'required' || p === 'secret' || p === 'generate') {
+    f[p] = t.checked;
+    row.querySelector('small').textContent = schemaSubtitle(f);
+  } else if (p === 'type' && e.type === 'change') {
+    f.type = t.value;
+    delete f.inputmode; delete f.digitsOnly;
+    if (f.format && f.type !== 'text') delete f.format;
+    if (f.type === 'password') f.secret = true;
+    if (f.type !== 'password') delete f.generate;
+    if (f.type === 'textarea' || f.type === 'select') { delete f.secret; delete f.maxlength; }
+    if (f.type === 'select' && !(f.options && f.options.length)) f.options = ['Option 1', 'Option 2'];
+    schemaOpen.add(f.key);
+    renderSchemaList();
+  }
+}
+
+function onSchemaClick(e) {
+  const btn = e.target.closest('[data-act]');
+  if (!btn || btn.disabled) return;
+  const row = btn.closest('.schema-row');
+  const i = schemaDraft.findIndex(x => x.key === row.dataset.key);
+  if (i < 0) return;
+  const act = btn.dataset.act, key = schemaDraft[i].key;
+  if (act === 'toggle') {
+    schemaOpen.has(key) ? schemaOpen.delete(key) : schemaOpen.add(key);
+    row.classList.toggle('open');
+    return;
+  }
+  schemaDirty = true;
+  if (act === 'up' && i > 1) [schemaDraft[i - 1], schemaDraft[i]] = [schemaDraft[i], schemaDraft[i - 1]];
+  if (act === 'down' && i < schemaDraft.length - 1) [schemaDraft[i + 1], schemaDraft[i]] = [schemaDraft[i], schemaDraft[i + 1]];
+  if (act === 'del') { schemaDraft.splice(i, 1); schemaOpen.delete(key); }
+  renderSchemaList(act === 'del' ? null : key);
+}
+
+function closeSchemaEditor() {
+  if (schemaDirty && !confirm('Discard your unsaved field changes?')) return;
+  hide($('#sheet-schema'));
+}
+
+async function saveSchema() {
+  for (const f of schemaDraft) {
+    if (!f.label.trim()) { schemaOpen.add(f.key); renderSchemaList(f.key); toast('Every field needs a label'); return; }
+    if (f.type === 'select' && !(f.options && f.options.length)) { schemaOpen.add(f.key); renderSchemaList(f.key); toast('A dropdown needs at least one option'); return; }
+  }
+  const clean = sanitizeSchema(schemaDraft);
+  if (!clean) { toast('Could not save these fields'); return; }
+  const removed = SCHEMAS[schemaCat].map(f => f.key).filter(k => !clean.some(f => f.key === k));
+  const catItems = vault.items.filter(it => it.cat === schemaCat);
+  const affected = catItems.filter(it => removed.some(k => it.fields[k]));
+  if (affected.length) {
+    const names = removed.map(k => SCHEMAS[schemaCat].find(f => f.key === k).label).join(', ');
+    if (!confirm(`Deleting "${names}" permanently erases its saved values from ${affected.length} ${affected.length === 1 ? 'entry' : 'entries'}. Continue?`)) return;
+  }
+  const prev = JSON.stringify(vault);
+  try {
+    catItems.forEach(it => removed.forEach(k => { delete it.fields[k]; }));
+    vault.schemas = vault.schemas || {};
+    const isDefault = JSON.stringify(clean) === JSON.stringify(sanitizeSchema(DEFAULT_SCHEMAS[schemaCat]));
+    if (isDefault) delete vault.schemas[schemaCat]; else vault.schemas[schemaCat] = clean;
+    await persistVault();
+  } catch (err) {
+    vault = JSON.parse(prev);
+    applySchemas();
+    toast('Save failed — nothing was changed');
+    return;
+  }
+  applySchemas();
+  renderList();
+  schemaDirty = false;
+  hide($('#sheet-schema'));
+  toast('Fields saved');
+}
+
+function wireSchemaEditor() {
+  const list = $('#schema-list');
+  list.addEventListener('input', onSchemaInput);
+  list.addEventListener('change', onSchemaInput);
+  list.addEventListener('click', onSchemaClick);
+  $('#schema-close').addEventListener('click', closeSchemaEditor);
+  $('#schema-add').addEventListener('click', () => {
+    const f = { key: 'f_' + uid(), label: 'New field', type: 'text', placeholder: '' };
+    schemaDraft.push(f);
+    schemaDirty = true;
+    schemaOpen.add(f.key);
+    renderSchemaList(f.key);
+    const inp = list.querySelector(`.schema-row[data-key="${f.key}"] input[data-p="label"]`);
+    if (inp) { inp.focus(); inp.select(); }
+  });
+  $('#schema-reset').addEventListener('click', () => {
+    if (!confirm('Reset this category to its original fields? Custom fields are removed when you save.')) return;
+    schemaDraft = JSON.parse(JSON.stringify(sanitizeSchema(DEFAULT_SCHEMAS[schemaCat])));
+    schemaDirty = true;
+    schemaOpen = new Set();
+    renderSchemaList();
+  });
+  $('#schema-save').addEventListener('click', saveSchema);
+}
+
 // ================= CSV BACKUP =================
 const CSV_COLUMNS = ['id', 'cat', 'label', 'field1', 'field2', 'field3', 'field4', 'field5', 'field6', 'notes', 'updatedAt'];
 
@@ -1388,15 +2038,16 @@ function csvEscape(v) {
 
 function exportCSV() {
   hide($('#sheet-menu'));
-  const rows = [['id', 'category', 'label', 'field_key_1', 'field_val_1', 'field_key_2', 'field_val_2', 'field_key_3', 'field_val_3', 'field_key_4', 'field_val_4', 'field_key_5', 'field_val_5', 'notes', 'updatedAt']];
+  // Format: id,category,label,notes,updatedAt, then any number of key/value pairs. Custom field layouts travel as __schema__ rows.
+  const extra = (item) => SCHEMAS[item.cat].filter(f => f.key !== 'label' && f.key !== 'notes');
+  const maxPairs = vault.items.reduce((m, it) => Math.max(m, extra(it).length), 0);
+  const header = ['id', 'category', 'label', 'notes', 'updatedAt'];
+  for (let i = 1; i <= maxPairs; i++) header.push('field_key_' + i, 'field_val_' + i);
+  const rows = [header];
+  for (const [cat, sch] of Object.entries(vault.schemas || {})) rows.push(['', '__schema__', cat, JSON.stringify(sch), '']);
   for (const item of vault.items) {
-    const schema = SCHEMAS[item.cat].filter(f => f.key !== 'label' && f.key !== 'notes');
-    const row = [item.id, item.cat, item.fields.label || ''];
-    for (let i = 0; i < 5; i++) {
-      const f = schema[i];
-      row.push(f ? f.key : '', f ? (item.fields[f.key] || '') : '');
-    }
-    row.push(item.fields.notes || '', item.updatedAt || '');
+    const row = [item.id, item.cat, item.fields.label || '', item.fields.notes || '', item.updatedAt || ''];
+    extra(item).forEach(f => row.push(f.key, item.fields[f.key] || ''));
     rows.push(row);
   }
   const csv = rows.map(r => r.map(csvEscape).join(',')).join('\n');
@@ -1435,21 +2086,52 @@ async function importCSV(e) {
   if (!file) return;
   const text = await file.text();
   const rows = parseCSV(text).filter(r => r.length > 1);
-  rows.shift(); // header
-  let added = 0;
-  for (const r of rows) {
-    const [id, cat, label, k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, notes, updatedAt] = r;
-    if (!SCHEMAS[cat]) continue;
-    const fields = { label, notes: notes || '' };
-    [[k1, v1], [k2, v2], [k3, v3], [k4, v4], [k5, v5]].forEach(([k, v]) => { if (k) fields[k] = v; });
-    const exists = vault.items.find(i => i.id === id);
-    if (exists) { exists.fields = fields; exists.updatedAt = Number(updatedAt) || Date.now(); }
-    else { vault.items.push({ id: id || uid(), cat, fields, updatedAt: Number(updatedAt) || Date.now() }); added++; }
+  const header = rows.shift() || [];
+  const newFmt = header[3] === 'notes';
+  const prev = JSON.stringify(vault);
+  let added = 0, total = 0, skipped = 0, layouts = 0;
+  try {
+    if (newFmt) {
+      for (const r of rows) {
+        if (r[1] !== '__schema__' || !DEFAULT_SCHEMAS[r[2]]) continue;
+        let clean = null;
+        try { clean = sanitizeSchema(JSON.parse(r[3])); } catch (_) {}
+        if (!clean) continue;
+        vault.schemas = vault.schemas || {};
+        vault.schemas[r[2]] = clean;
+        layouts++;
+      }
+      applySchemas();
+    }
+    for (const r of rows) {
+      let id, cat, label, notes, updatedAt, pairs = [];
+      if (newFmt) {
+        [id, cat, label, notes, updatedAt] = r;
+        for (let i = 5; i + 1 < r.length; i += 2) pairs.push([r[i], r[i + 1]]);
+      } else {
+        let k1, v1, k2, v2, k3, v3, k4, v4, k5, v5;
+        [id, cat, label, k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, notes, updatedAt] = r;
+        pairs = [[k1, v1], [k2, v2], [k3, v3], [k4, v4], [k5, v5]];
+      }
+      if (cat === '__schema__' || !SCHEMAS[cat]) continue;
+      total++;
+      const known = new Set(SCHEMAS[cat].map(f => f.key));
+      const fields = { label, notes: notes || '' };
+      pairs.forEach(([k, v]) => { if (!k) return; if (known.has(k) && !BAD_KEYS.has(k)) fields[k] = v; else skipped++; });
+      const exists = vault.items.find(i => i.id === id);
+      if (exists) { exists.fields = fields; exists.updatedAt = Number(updatedAt) || Date.now(); }
+      else { vault.items.push({ id: id || uid(), cat, fields, updatedAt: Number(updatedAt) || Date.now() }); added++; }
+    }
+    await persistVault();
+  } catch (err) {
+    vault = JSON.parse(prev);
+    applySchemas();
+    toast('Import failed — nothing was changed');
+    return;
   }
-  await persistVault();
   renderList();
   hide($('#sheet-menu'));
-  toast(`Restored ${rows.length} entries (${added} new)`);
+  toast(`Restored ${total} entries (${added} new)` + (layouts ? `, ${layouts} field layout(s)` : '') + (skipped ? `, ${skipped} unmatched value(s) skipped` : ''), skipped ? 4500 : 2200);
 }
 
 // ================= BIOMETRIC UNLOCK SETUP =================
