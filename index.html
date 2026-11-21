@@ -438,7 +438,7 @@ margin-top: .5vh;
 .sheet-footer { padding-top: 12px; }
 
 
-/* ===== FIELD EDITOR (long-press a category) ===== */
+/* ===== FIELD EDITOR ===== */
 .schema-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; padding-bottom: 10px; }
 .schema-note { font-size: calc(12.5px * var(--fs)); color: var(--on-surface-muted); margin: 0 0 4px; }
 .schema-row { background: var(--surface-alt); border: 1.5px solid var(--outline); border-radius: var(--radius-md); }
@@ -567,6 +567,20 @@ margin-top: .5vh;
 }
 
 
+/* ===== CATEGORY MANAGEMENT ===== */
+.mc-row, .fc-row { display: flex; align-items: center; gap: 10px; background: var(--surface-alt); border: 1.5px solid var(--outline); border-radius: var(--radius-md); padding: 8px 8px 8px 12px; color: var(--on-surface); text-align: left; width: 100%; }
+.fc-row { padding: 10px 12px; }
+.fc-row:active { background: var(--accent-tint); }
+.mc-ico { width: 40px; height: 40px; border-radius: 12px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--accent-tint); color: var(--accent-fg); }
+.mc-text { flex: 1; min-width: 0; }
+.mc-name { margin: 0; font-size: calc(15px * var(--fs)); font-weight: 600; overflow-wrap: anywhere; }
+.mc-sub { margin: 2px 0 0; font-size: calc(12.5px * var(--fs)); color: var(--on-surface-muted); }
+.icon-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 18px; }
+.icon-grid button { aspect-ratio: 1; border: 1.5px solid var(--outline); background: var(--surface); color: var(--on-surface); border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 0; }
+.icon-grid button.active { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-fg); }
+.bento-empty { grid-column: 1 / -1; text-align: center; color: var(--on-surface-muted); padding: 40px 12px; margin: 0; }
+.bento { grid-auto-rows: minmax(120px, 1fr); }
+.bento-label { flex-wrap: wrap; justify-content: center; text-align: center; row-gap: 4px; }
 /* ===== COSMETICS ===== */
 .cos-block { margin-bottom: 20px; }
 .cos-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--accent-label); margin: 0 0 8px; display: flex; justify-content: space-between; }
@@ -754,32 +768,7 @@ const Cosmetics = (() => {
     <input type="text" id="search-input" placeholder="Search vault" />
   </div>
 
-  <section id="bento" class="bento" aria-label="Categories">
-    <button type="button" class="bento-tile" data-cat="bank">
-      <span class="bento-icon" style="background:var(--pi-a);color:var(--on-pi-a)"><span class="material-symbols-outlined">account_balance</span></span>
-      <span class="bento-label">Bank<span class="count-badge" data-count="bank">0</span></span>
-    </button>
-    <button type="button" class="bento-tile" data-cat="card">
-      <span class="bento-icon" style="background:var(--pi-b);color:var(--on-pi-b)"><span class="material-symbols-outlined">credit_card</span></span>
-      <span class="bento-label">Card<span class="count-badge" data-count="card">0</span></span>
-    </button>
-    <button type="button" class="bento-tile" data-cat="document">
-      <span class="bento-icon" style="background:var(--accent);color:var(--on-accent)"><span class="material-symbols-outlined">draft</span></span>
-      <span class="bento-label">Documents<span class="count-badge" data-count="document">0</span></span>
-    </button>
-    <button type="button" class="bento-tile" data-cat="note">
-      <span class="bento-icon" style="background:var(--pi-b);color:var(--on-pi-b)"><span class="material-symbols-outlined">stylus_note</span></span>
-      <span class="bento-label">Notes<span class="count-badge" data-count="note">0</span></span>
-    </button>
-    <button type="button" class="bento-tile" data-cat="password">
-      <span class="bento-icon" style="background:var(--accent);color:var(--on-accent)"><span class="material-symbols-outlined">key</span></span>
-      <span class="bento-label">Password<span class="count-badge" data-count="password">0</span></span>
-    </button>
-    <button type="button" class="bento-tile" data-cat="token">
-      <span class="bento-icon" style="background:var(--pi-a);color:var(--on-pi-a)"><span class="material-symbols-outlined">token</span></span>
-      <span class="bento-label">Token<span class="count-badge" data-count="token">0</span></span>
-    </button>
-  </section>
+  <section id="bento" class="bento" aria-label="Categories"></section>
 
   <main id="vault-list" class="vault-list"></main>
   <div id="empty-state" class="empty-state hidden">
@@ -797,27 +786,7 @@ const Cosmetics = (() => {
   <div class="sheet">
     <div class="sheet-handle"></div>
     <h2>New entry</h2>
-    <div class="picker-grid">
-      <button class="picker-item" data-cat="bank">
-        <span class="picker-icon" style="background:var(--pi-a);color:var(--on-pi-a)"><span class="material-symbols-outlined">account_balance</span></span>Bank
-      </button>
-      <button class="picker-item" data-cat="card">
-        <span class="picker-icon" style="background:var(--pi-b);color:var(--on-pi-b)"><span class="material-symbols-outlined">credit_card</span></span>Card
-      </button>
-      <button class="picker-item" data-cat="document">
-        <span class="picker-icon" style="background:var(--accent)"><span class="material-symbols-outlined">draft</span></span>Documents
-      </button>
-      <button class="picker-item" data-cat="note">
-        <span class="picker-icon" style="background:var(--pi-b);color:var(--on-pi-b)"><span class="material-symbols-outlined">stylus_note</span></span>Notes
-      </button>
-      <button class="picker-item" data-cat="password">
-        <span class="picker-icon" style="background:var(--accent)"><span class="material-symbols-outlined">key</span></span>Password
-      </button>
-      <button class="picker-item" data-cat="token">
-        <span class="picker-icon" style="background:var(--pi-a);color:var(--on-pi-a)"><span class="material-symbols-outlined">token</span></span>Token
-      </button>
-    </div>
-    <p class="picker-hint">Long-press a category to edit its fields</p>
+    <div class="picker-grid" id="picker-grid"></div>
     <button class="btn btn-ghost btn-block" id="picker-cancel">Close</button>
   </div>
 </div>
@@ -847,7 +816,44 @@ const Cosmetics = (() => {
   </div>
 </div>
 
-<!-- ============ FIELD EDITOR SHEET (long-press a category) ============ -->
+<!-- ============ PICK CATEGORY TO EDIT FIELDS ============ -->
+<div id="sheet-fieldcat" class="sheet-overlay hidden">
+  <div class="sheet sheet-tall">
+    <div class="sheet-handle"></div>
+    <h2>Edit Category's Fields</h2>
+    <p class="schema-note">Choose a category to change its input fields.</p>
+    <div id="fc-list" class="cat-list"></div>
+    <button class="btn btn-ghost btn-block" id="fc-close">Close</button>
+  </div>
+</div>
+
+<!-- ============ MANAGE CATEGORIES ============ -->
+<div id="sheet-managecats" class="sheet-overlay hidden">
+  <div class="sheet sheet-tall">
+    <div class="sheet-handle"></div>
+    <h2>Manage Categories</h2>
+    <p class="schema-note">Add, rename or delete categories. Deleting a category permanently erases all of its entries.</p>
+    <div id="mc-list" class="cat-list"></div>
+    <button class="btn btn-ghost btn-block hidden" id="mc-restore">Restore built-in categories</button>
+    <button class="btn btn-primary btn-block" id="mc-add" style="margin-top:10px">Add category</button>
+    <button class="btn btn-ghost btn-block" id="mc-close" style="margin-top:10px">Close</button>
+  </div>
+</div>
+
+<!-- ============ ADD / EDIT CATEGORY ============ -->
+<div id="sheet-catedit" class="sheet-overlay hidden">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="catedit-title">New category</h2>
+    <label class="field"><span>Name</span><input type="text" id="catedit-name" maxlength="30" autocomplete="off" placeholder="e.g. Insurance" /></label>
+    <p class="cos-label" style="margin-top:16px">Icon</p>
+    <div id="catedit-icons" class="icon-grid"></div>
+    <button class="btn btn-primary btn-block" id="catedit-save">Save category</button>
+    <button class="btn btn-ghost btn-block" id="catedit-close" style="margin-top:10px">Close</button>
+  </div>
+</div>
+
+<!-- ============ FIELD EDITOR SHEET ============ -->
 <div id="sheet-schema" class="sheet-overlay hidden">
   <div class="sheet sheet-tall">
     <div class="sheet-header">
@@ -922,6 +928,14 @@ const Cosmetics = (() => {
   <div class="sheet">
     <div class="sheet-handle"></div>
     <h2>Menu</h2>
+    <button class="menu-row" id="menu-fields">
+      <span class="material-symbols-outlined" style="color:var(--accent-fg)">tune</span>
+      Edit Category's Fields
+    </button>
+    <button class="menu-row" id="menu-cats">
+      <span class="material-symbols-outlined" style="color:var(--accent-fg)">category</span>
+      Manage Categories
+    </button>
     <button class="menu-row" id="menu-export">
       <span class="material-symbols-outlined" style="color:var(--accent-fg)">download</span>
       Backup as CSV
@@ -1122,7 +1136,8 @@ let vault = { items: [] };
 let catOpen = null;   // category whose list sheet is open
 let activeItemId = null;
 
-const CATS = {
+// Built-in categories (all of them can be deleted/renamed by the user; see vault.cats).
+const BUILTIN_CATS = {
   password: { label: 'Password', icon: 'key' },
   bank:     { label: 'Bank', icon: 'account_balance' },
   card:     { label: 'Card', icon: 'credit_card' },
@@ -1130,6 +1145,34 @@ const CATS = {
   token:    { label: 'Token', icon: 'token' },
   note:     { label: 'Notes', icon: 'stylus_note' },
 };
+// Live categories = vault.cats (stored encrypted in the vault) or the built-in list when never customised.
+const CATS = {};
+let CAT_ORDER = [];
+const CAT_ID_RE = /^[A-Za-z0-9][A-Za-z0-9_]{0,39}$/;
+const CAT_ICON_CHOICES = ['key','lock','shield','vpn_key','account_balance','credit_card','wallet','savings','payments','receipt_long',
+  'draft','description','folder','badge','sticky_note_2','stylus_note','token','mail','call','wifi',
+  'home','work','school','flight','directions_car','shopping_bag','medical_services','favorite','star','pets'];
+function defaultCatList() { return Object.keys(BUILTIN_CATS).map(id => ({ id, ...BUILTIN_CATS[id] })); }
+function sanitizeCats(arr) {
+  if (!Array.isArray(arr)) return null;
+  const seen = new Set(), out = [];
+  for (const c of arr) {
+    if (!c || typeof c.id !== 'string' || !CAT_ID_RE.test(c.id) || seen.has(c.id)) continue;
+    const label = String(c.label || '').trim().slice(0, 30);
+    if (!label) continue;
+    const icon = /^[a-z0-9_]{1,40}$/.test(c.icon || '') ? c.icon : 'folder';
+    seen.add(c.id); out.push({ id: c.id, label, icon });
+  }
+  return out;
+}
+function applyCats() {
+  const raw = (typeof vault !== 'undefined' && vault && vault.cats) || null;
+  const list = (sanitizeCats(raw) || defaultCatList())
+    .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));   // always alphabetical
+  Object.keys(CATS).forEach(k => delete CATS[k]);
+  CAT_ORDER = [];
+  list.forEach(c => { CATS[c.id] = { label: c.label, icon: c.icon }; CAT_ORDER.push(c.id); });
+}
 
 // Field each category's search should match against.
 const SEARCH_FIELD = {
@@ -1249,13 +1292,22 @@ function sanitizeSchema(arr) {
   return out.length ? out : null;     // a category needs at least one field
 }
 
+// Fields given to a brand-new user-made category (fully editable afterwards).
+const GENERIC_SCHEMA = [
+  { key: 'label', label: 'Name', type: 'text', required: true, placeholder: '' },
+  { key: 'notes', label: 'Notes', type: 'textarea', placeholder: 'Write your note here' },
+];
+function defaultSchemaFor(cat) { return DEFAULT_SCHEMAS[cat] || GENERIC_SCHEMA; }
+
 // Live schemas = defaults overridden per-category by the user's customisations (stored encrypted in the vault).
 const SCHEMAS = {};
 function applySchemas() {
+  applyCats();
   const custom = (typeof vault !== 'undefined' && vault && vault.schemas) || {};
-  for (const cat of Object.keys(DEFAULT_SCHEMAS)) {
-    const clean = sanitizeSchema(custom[cat]);
-    SCHEMAS[cat] = JSON.parse(JSON.stringify(clean || sanitizeSchema(DEFAULT_SCHEMAS[cat])));
+  Object.keys(SCHEMAS).forEach(k => delete SCHEMAS[k]);
+  for (const cat of CAT_ORDER) {
+    const clean = sanitizeSchema(Array.isArray(custom[cat]) ? custom[cat] : null);
+    SCHEMAS[cat] = JSON.parse(JSON.stringify(clean || sanitizeSchema(defaultSchemaFor(cat))));
   }
 }
 applySchemas();
@@ -1536,6 +1588,8 @@ function lockVault(reason) {
   // wipe decrypted data from the DOM
   $('#vault-list').innerHTML = '';
   $('#cat-list').innerHTML = '';
+  $('#bento').innerHTML = ''; $('#picker-grid').innerHTML = ''; catSig = '';
+  $('#mc-list').innerHTML = ''; $('#fc-list').innerHTML = '';
   catOpen = null;
   updateBadges();
   $('#view-body').innerHTML = '';
@@ -1544,7 +1598,7 @@ function lockVault(reason) {
   $('#search-input').value = '';
   $('#unlock-pass').value = '';
   $('#unlock-error').textContent = '';
-  ['#sheet-picker', '#sheet-cat', '#sheet-schema', '#sheet-editor', '#sheet-view', '#sheet-menu', '#sheet-cosmetics']
+  ['#sheet-picker', '#sheet-cat', '#sheet-fieldcat', '#sheet-managecats', '#sheet-catedit', '#sheet-schema', '#sheet-editor', '#sheet-view', '#sheet-menu', '#sheet-cosmetics']
     .forEach(id => hide($(id)));
   hide($('#screen-app'));
   show($('#screen-unlock'));
@@ -1617,27 +1671,12 @@ function wireEvents() {
   $('#picker-cancel').addEventListener('click', () => hide($('#sheet-picker')));
   $('#sheet-picker').addEventListener('click', (e) => { if (e.target.id === 'sheet-picker') hide($('#sheet-picker')); });
 
-  $$('.picker-item').forEach(btn => {
-    let timer = null, fired = false, sx = 0, sy = 0;
-    const cancel = () => { clearTimeout(timer); timer = null; };
-    btn.addEventListener('pointerdown', (e) => {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
-      fired = false; sx = e.clientX; sy = e.clientY; cancel();
-      timer = setTimeout(() => {
-        timer = null; fired = true;
-        if (navigator.vibrate) navigator.vibrate(20);
-        openSchemaEditor(btn.dataset.cat);
-      }, 500);
-    });
-    btn.addEventListener('pointermove', (e) => { if (timer && Math.hypot(e.clientX - sx, e.clientY - sy) > 10) cancel(); });
-    ['pointerup', 'pointerleave', 'pointercancel'].forEach(t => btn.addEventListener(t, cancel));
-    btn.addEventListener('contextmenu', (e) => e.preventDefault());
-    btn.addEventListener('click', (e) => {
-      if (fired) { fired = false; e.preventDefault(); return; }   // the long-press already opened the field editor
-      hide($('#sheet-picker'));
-      openEditor(btn.dataset.cat, null);
-    });
+  $('#picker-grid').addEventListener('click', (e) => {
+    const btn = e.target.closest('.picker-item'); if (!btn) return;
+    hide($('#sheet-picker'));
+    openEditor(btn.dataset.cat, null);
   });
+  wireCategories();
   wireSchemaEditor();
 
   $('#editor-close').addEventListener('click', () => hide($('#sheet-editor')));
@@ -1713,6 +1752,12 @@ function wireCosmetics() {
   });
 }
 
+function genericSub(item) {
+  const tk = titleKey(item.cat);
+  const f = (SCHEMAS[item.cat] || []).find(x => x.key !== tk && !isSecretField(x) && item.fields[x.key]);
+  return f ? String(item.fields[f.key]) : '';
+}
+
 function buildItemCard(item, idx) {
   const card = document.createElement('div');
   card.className = 'item-card';
@@ -1721,7 +1766,7 @@ function buildItemCard(item, idx) {
               item.cat === 'card' ? maskTail(item.fields.cardNumber) :
               item.cat === 'bank' ? maskTail(item.fields.accountNumber) :
               item.cat === 'document' ? (item.fields.idNumber || '') :
-              item.cat === 'note' ? (item.fields.notes || '') : '';
+              item.cat === 'note' ? (item.fields.notes || '') : genericSub(item);
   const catTag = item.cat === 'card' ? (item.fields.cardType || CATS.card.label) : CATS[item.cat].label;
   card.innerHTML = `
     <div class="item-icon">${iconHtml(CATS[item.cat].icon)}</div>
@@ -1763,7 +1808,163 @@ function closeCatSheet() {
 }
 
 // Landing = bento grid of categories. Typing in search swaps it for a flat results list across all categories.
+// ================= CATEGORY MANAGEMENT =================
+const TILE_BG = ['var(--pi-a);color:var(--on-pi-a)', 'var(--pi-b);color:var(--on-pi-b)', 'var(--accent);color:var(--on-accent)'];
+let catSig = '';
+function renderCategoryUI() {
+  const sig = JSON.stringify(CAT_ORDER.map(id => [id, CATS[id].label, CATS[id].icon]));
+  if (sig === catSig) return;
+  catSig = sig;
+  const bento = $('#bento'), grid = $('#picker-grid');
+  bento.innerHTML = ''; grid.innerHTML = '';
+  if (!CAT_ORDER.length) {
+    const msg = '<p class="bento-empty">No categories yet.<br>Open the menu and choose Manage Categories to add one.</p>';
+    bento.innerHTML = msg; grid.innerHTML = msg;
+    return;
+  }
+  CAT_ORDER.forEach((id, i) => {
+    const bg = TILE_BG[i % 3], c = CATS[id];
+    bento.insertAdjacentHTML('beforeend',
+      `<button type="button" class="bento-tile" data-cat="${id}"><span class="bento-icon" style="background:${bg}">${iconHtml(c.icon)}</span><span class="bento-label">${escapeHtml(c.label)}<span class="count-badge" data-count="${id}">0</span></span></button>`);
+    grid.insertAdjacentHTML('beforeend',
+      `<button class="picker-item" data-cat="${id}"><span class="picker-icon" style="background:${bg}">${iconHtml(c.icon)}</span>${escapeHtml(c.label)}</button>`);
+  });
+}
+
+function catListForSave() { return CAT_ORDER.map(id => ({ id, label: CATS[id].label, icon: CATS[id].icon })); }
+function entryCount(id) { return vault.items.filter(i => i.cat === id).length; }
+function refreshCatUI() { renderManageCats(); renderFieldCats(); renderList(); }
+
+// Run a vault mutation; roll everything back if saving fails.
+async function mutateVault(fn) {
+  const prev = JSON.stringify(vault);
+  try { fn(); applySchemas(); await persistVault(); return true; }
+  catch (err) { vault = JSON.parse(prev); applySchemas(); toast('Save failed — nothing was changed'); return false; }
+}
+
+function renderFieldCats() {
+  const list = $('#fc-list');
+  list.innerHTML = '';
+  if (!CAT_ORDER.length) { list.innerHTML = '<p class="bento-empty">No categories yet.</p>'; return; }
+  CAT_ORDER.forEach(id => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'fc-row'; b.dataset.id = id;
+    b.innerHTML = `<span class="mc-ico">${iconHtml(CATS[id].icon)}</span>
+      <span class="mc-text"><p class="mc-name">${escapeHtml(CATS[id].label)}</p><p class="mc-sub">${SCHEMAS[id].length} field${SCHEMAS[id].length === 1 ? '' : 's'}</p></span>
+      <span class="material-symbols-outlined" style="color:var(--on-surface-muted)">chevron_right</span>`;
+    list.appendChild(b);
+  });
+}
+
+function renderManageCats() {
+  const list = $('#mc-list');
+  list.innerHTML = '';
+  if (!CAT_ORDER.length) list.innerHTML = '<p class="bento-empty">No categories yet.</p>';
+  CAT_ORDER.forEach(id => {
+    const n = entryCount(id);
+    const row = document.createElement('div');
+    row.className = 'mc-row'; row.dataset.id = id;
+    row.innerHTML = `<span class="mc-ico">${iconHtml(CATS[id].icon)}</span>
+      <span class="mc-text"><p class="mc-name">${escapeHtml(CATS[id].label)}</p><p class="mc-sub">${n} ${n === 1 ? 'entry' : 'entries'}</p></span>
+      <button type="button" class="icon-btn" data-act="edit" aria-label="Edit category"><span class="material-symbols-outlined">edit</span></button>
+      <button type="button" class="icon-btn" data-act="del" aria-label="Delete category"><span class="material-symbols-outlined" style="color:var(--danger)">delete</span></button>`;
+    list.appendChild(row);
+  });
+  const missing = Object.keys(BUILTIN_CATS).some(id => !CATS[id]);
+  missing ? show($('#mc-restore')) : hide($('#mc-restore'));
+}
+
+let editCatId = null, editCatIcon = 'folder';
+function renderIconGrid() {
+  const g = $('#catedit-icons');
+  g.innerHTML = '';
+  const icons = CAT_ICON_CHOICES.includes(editCatIcon) ? CAT_ICON_CHOICES : [editCatIcon, ...CAT_ICON_CHOICES];
+  icons.forEach(ic => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.dataset.icon = ic; b.setAttribute('aria-label', ic.replace(/_/g, ' '));
+    b.className = ic === editCatIcon ? 'active' : '';
+    b.innerHTML = iconHtml(ic);
+    g.appendChild(b);
+  });
+}
+function openCatEdit(id) {
+  editCatId = id || null;
+  $('#catedit-title').textContent = id ? 'Edit category' : 'New category';
+  $('#catedit-name').value = id ? CATS[id].label : '';
+  editCatIcon = id ? CATS[id].icon : 'folder';
+  renderIconGrid();
+  show($('#sheet-catedit'));
+  setTimeout(() => $('#catedit-name').focus(), 50);
+}
+async function saveCatEdit() {
+  const name = $('#catedit-name').value.trim().slice(0, 30);
+  if (!name) { toast('Category needs a name'); return; }
+  if (CAT_ORDER.some(id => id !== editCatId && CATS[id].label.toLowerCase() === name.toLowerCase())) { toast('A category with that name already exists'); return; }
+  const ok = await mutateVault(() => {
+    const list = catListForSave();
+    if (editCatId) { const c = list.find(x => x.id === editCatId); c.label = name; c.icon = editCatIcon; }
+    else {
+      let id; do { id = 'c' + uid().replace(/[^A-Za-z0-9]/g, ''); } while (CATS[id]);
+      list.push({ id, label: name, icon: editCatIcon });
+    }
+    vault.cats = list;
+  });
+  if (!ok) return;
+  hide($('#sheet-catedit'));
+  refreshCatUI();
+  toast(editCatId ? 'Category updated' : 'Category added');
+}
+async function deleteCategory(id) {
+  const label = CATS[id].label, n = entryCount(id);
+  const msg = n ? `Delete "${label}" and permanently erase its ${n} ${n === 1 ? 'entry' : 'entries'}? This cannot be undone.` : `Delete the empty category "${label}"?`;
+  if (!confirm(msg)) return;
+  const ok = await mutateVault(() => {
+    vault.items = vault.items.filter(i => i.cat !== id);
+    if (vault.schemas) delete vault.schemas[id];
+    vault.cats = catListForSave().filter(c => c.id !== id);
+  });
+  if (!ok) return;
+  if (catOpen === id) closeCatSheet();
+  refreshCatUI();
+  toast('Category deleted');
+}
+async function restoreBuiltinCats() {
+  const ok = await mutateVault(() => {
+    const list = catListForSave();
+    Object.keys(BUILTIN_CATS).forEach(id => { if (!CATS[id]) list.push({ id, ...BUILTIN_CATS[id] }); });
+    vault.cats = list;
+  });
+  if (ok) { refreshCatUI(); toast('Built-in categories restored'); }
+}
+
+function wireCategories() {
+  $('#menu-fields').addEventListener('click', () => { hide($('#sheet-menu')); renderFieldCats(); show($('#sheet-fieldcat')); });
+  $('#menu-cats').addEventListener('click', () => { hide($('#sheet-menu')); renderManageCats(); show($('#sheet-managecats')); });
+  $('#fc-close').addEventListener('click', () => hide($('#sheet-fieldcat')));
+  $('#mc-close').addEventListener('click', () => hide($('#sheet-managecats')));
+  $('#catedit-close').addEventListener('click', () => hide($('#sheet-catedit')));
+  ['sheet-fieldcat', 'sheet-managecats', 'sheet-catedit'].forEach(id =>
+    $('#' + id).addEventListener('click', (e) => { if (e.target.id === id) hide(e.target); }));
+  $('#fc-list').addEventListener('click', (e) => {
+    const b = e.target.closest('.fc-row'); if (b) openSchemaEditor(b.dataset.id);
+  });
+  $('#mc-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act]'); if (!btn) return;
+    const id = btn.closest('.mc-row').dataset.id;
+    btn.dataset.act === 'edit' ? openCatEdit(id) : deleteCategory(id);
+  });
+  $('#mc-add').addEventListener('click', () => openCatEdit(null));
+  $('#mc-restore').addEventListener('click', restoreBuiltinCats);
+  $('#catedit-icons').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-icon]'); if (!b) return;
+    editCatIcon = b.dataset.icon; renderIconGrid();
+  });
+  $('#catedit-save').addEventListener('click', saveCatEdit);
+  $('#catedit-name').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); saveCatEdit(); } });
+}
+
 function renderList() {
+  renderCategoryUI();
   updateBadges();
   const q = $('#search-input').value.trim().toLowerCase();
   const list = $('#vault-list');
@@ -1773,6 +1974,7 @@ function renderList() {
   } else {
     hide($('#bento')); show(list);
     const found = vault.items.filter(item => {
+      if (!CATS[item.cat]) return false;
       const sk = SEARCH_FIELD[item.cat];
       const hasSk = SCHEMAS[item.cat].some(f => f.key === sk);
       const hay = ((hasSk ? item.fields[sk] : item.fields[titleKey(item.cat)]) || '').toLowerCase();
@@ -1959,7 +2161,7 @@ function openView(item) {
   show($('#sheet-view'));
 }
 
-// ================= FIELD EDITOR (long-press a category) =================
+// ================= FIELD EDITOR (Menu > Edit Category's Fields) =================
 let schemaCat = null, schemaDraft = [], schemaDirty = false, schemaOpen = new Set();
 
 function openSchemaEditor(cat) {
@@ -2097,7 +2299,7 @@ async function saveSchema() {
   try {
     catItems.forEach(it => removed.forEach(k => { delete it.fields[k]; }));
     vault.schemas = vault.schemas || {};
-    const isDefault = JSON.stringify(clean) === JSON.stringify(sanitizeSchema(DEFAULT_SCHEMAS[schemaCat]));
+    const isDefault = JSON.stringify(clean) === JSON.stringify(sanitizeSchema(defaultSchemaFor(schemaCat)));
     if (isDefault) delete vault.schemas[schemaCat]; else vault.schemas[schemaCat] = clean;
     await persistVault();
   } catch (err) {
@@ -2108,6 +2310,7 @@ async function saveSchema() {
   }
   applySchemas();
   renderList();
+  renderFieldCats();
   schemaDirty = false;
   hide($('#sheet-schema'));
   toast('Fields saved');
@@ -2130,7 +2333,7 @@ function wireSchemaEditor() {
   });
   $('#schema-reset').addEventListener('click', () => {
     if (!confirm('Reset this category to its original fields? Custom fields are removed when you save.')) return;
-    schemaDraft = JSON.parse(JSON.stringify(sanitizeSchema(DEFAULT_SCHEMAS[schemaCat])));
+    schemaDraft = JSON.parse(JSON.stringify(sanitizeSchema(defaultSchemaFor(schemaCat))));
     schemaDirty = true;
     schemaOpen = new Set();
     renderSchemaList();
@@ -2154,6 +2357,7 @@ function exportCSV() {
   const header = ['id', 'category', 'label', 'notes', 'updatedAt'];
   for (let i = 1; i <= maxPairs; i++) header.push('field_key_' + i, 'field_val_' + i);
   const rows = [header];
+  CAT_ORDER.forEach(id => rows.push(['', '__cat__', id, JSON.stringify({ label: CATS[id].label, icon: CATS[id].icon }), '']));
   for (const [cat, sch] of Object.entries(vault.schemas || {})) rows.push(['', '__schema__', cat, JSON.stringify(sch), '']);
   for (const item of vault.items) {
     const row = [item.id, item.cat, item.fields.label || '', item.fields.notes || '', item.updatedAt || ''];
@@ -2202,8 +2406,23 @@ async function importCSV(e) {
   let added = 0, total = 0, skipped = 0, layouts = 0;
   try {
     if (newFmt) {
+      // 1) categories (custom ones, renames, icons)
+      const catRows = rows.filter(r => r[1] === '__cat__');
+      if (catRows.length) {
+        const list = catListForSave();
+        for (const r of catRows) {
+          let o = null; try { o = JSON.parse(r[3]); } catch (_) {}
+          const one = o && sanitizeCats([{ id: r[2], label: o.label, icon: o.icon }]);
+          if (!one || !one.length) continue;
+          const ex = list.find(c => c.id === one[0].id);
+          if (ex) { ex.label = one[0].label; ex.icon = one[0].icon; } else list.push(one[0]);
+        }
+        vault.cats = list;
+        applySchemas();
+      }
+      // 2) field layouts
       for (const r of rows) {
-        if (r[1] !== '__schema__' || !DEFAULT_SCHEMAS[r[2]]) continue;
+        if (r[1] !== '__schema__' || !CATS[r[2]]) continue;
         let clean = null;
         try { clean = sanitizeSchema(JSON.parse(r[3])); } catch (_) {}
         if (!clean) continue;
@@ -2223,7 +2442,12 @@ async function importCSV(e) {
         [id, cat, label, k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, notes, updatedAt] = r;
         pairs = [[k1, v1], [k2, v2], [k3, v3], [k4, v4], [k5, v5]];
       }
-      if (cat === '__schema__' || !SCHEMAS[cat]) continue;
+      if (cat === '__schema__' || cat === '__cat__') continue;
+      if (!SCHEMAS[cat] && BUILTIN_CATS[cat] && !CATS[cat]) {   // entry from a built-in category that was deleted since: bring it back
+        vault.cats = [...catListForSave(), { id: cat, ...BUILTIN_CATS[cat] }];
+        applySchemas();
+      }
+      if (!SCHEMAS[cat]) continue;
       total++;
       const known = new Set(SCHEMAS[cat].map(f => f.key));
       const fields = {};
