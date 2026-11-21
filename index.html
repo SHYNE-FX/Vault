@@ -245,35 +245,43 @@ margin-top: .5vh;
   flex: 1; font-size: calc(15px * var(--fs)); color: var(--on-surface);
 }
 
-.chips {
-  padding: 0 16px 14px;
-}
-.chips-select-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--surface);
-  border: 1.5px solid var(--outline);
-  border-radius: var(--radius-sm);
-  padding: 0 14px;
-  box-shadow: var(--elev-1);
-}
-.chips-select-icon { color: var(--accent-label); font-size: 20px !important; flex: none; }
-.chips-select-caret { color: var(--on-surface-muted); font-size: 20px !important; flex: none; pointer-events: none; }
-.chips-select-wrap select {
-  appearance: none;
-  -webkit-appearance: none;
-  border: none;
-  outline: none;
-  background: none;
+/* ===== BENTO LANDING ===== */
+.bento {
   flex: 1;
-  padding: 13px 4px;
-  font-size: calc(14.5px * var(--fs));
-  font-weight: 600;
-  color: var(--on-surface);
-  font-family: inherit;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, minmax(120px, 1fr));
+  gap: 12px;
+  padding: 2px 16px calc(100px + env(safe-area-inset-bottom));
 }
+.bento-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  border: 1.5px solid var(--outline);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--elev-1);
+  padding: 14px 8px;
+  color: var(--on-surface);
+  user-select: none; -webkit-user-select: none; touch-action: manipulation;
+  transition: transform .12s ease, border-color .15s ease, background-color .15s ease;
+}
+.bento-tile:active { transform: scale(.96); background: var(--accent-tint); border-color: var(--accent-lighter); }
+.bento-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.bento-icon .material-symbols-outlined { font-size: 28px !important; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+.bento-label { display: inline-flex; align-items: center; font-size: calc(15px * var(--fs)); font-weight: 600; }
+.count-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: calc(22px * var(--fs)); height: calc(22px * var(--fs)); padding: 0 6px;
+  margin-left: 8px; border-radius: 999px;
+  background: #e52222; color: #fff;
+  font-size: calc(12.5px * var(--fs)); font-weight: 700; line-height: 1;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.cat-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; padding: 4px 2px 10px; }
+#cat-title { display: inline-flex; align-items: center; justify-content: center; }
 
 /* ===== VAULT LIST ===== */
 .vault-list {
@@ -746,26 +754,37 @@ const Cosmetics = (() => {
     <input type="text" id="search-input" placeholder="Search vault" />
   </div>
 
-  <nav class="chips" id="category-chips">
-    <label class="chips-select-wrap">
-      <span class="material-symbols-outlined chips-select-icon">filter_list</span>
-      <select id="category-select">
-        <option value="all">All categories</option>
-        <option value="password">Password</option>
-        <option value="bank">Bank</option>
-        <option value="card">Card</option>
-        <option value="document">Documents</option>
-        <option value="token">Token</option>
-        <option value="note">Notes</option>
-      </select>
-      <span class="material-symbols-outlined chips-select-caret">expand_more</span>
-    </label>
-  </nav>
+  <section id="bento" class="bento" aria-label="Categories">
+    <button type="button" class="bento-tile" data-cat="bank">
+      <span class="bento-icon" style="background:var(--pi-a);color:var(--on-pi-a)"><span class="material-symbols-outlined">account_balance</span></span>
+      <span class="bento-label">Bank<span class="count-badge" data-count="bank">0</span></span>
+    </button>
+    <button type="button" class="bento-tile" data-cat="card">
+      <span class="bento-icon" style="background:var(--pi-b);color:var(--on-pi-b)"><span class="material-symbols-outlined">credit_card</span></span>
+      <span class="bento-label">Card<span class="count-badge" data-count="card">0</span></span>
+    </button>
+    <button type="button" class="bento-tile" data-cat="document">
+      <span class="bento-icon" style="background:var(--accent);color:var(--on-accent)"><span class="material-symbols-outlined">draft</span></span>
+      <span class="bento-label">Documents<span class="count-badge" data-count="document">0</span></span>
+    </button>
+    <button type="button" class="bento-tile" data-cat="note">
+      <span class="bento-icon" style="background:var(--pi-b);color:var(--on-pi-b)"><span class="material-symbols-outlined">stylus_note</span></span>
+      <span class="bento-label">Notes<span class="count-badge" data-count="note">0</span></span>
+    </button>
+    <button type="button" class="bento-tile" data-cat="password">
+      <span class="bento-icon" style="background:var(--accent);color:var(--on-accent)"><span class="material-symbols-outlined">key</span></span>
+      <span class="bento-label">Password<span class="count-badge" data-count="password">0</span></span>
+    </button>
+    <button type="button" class="bento-tile" data-cat="token">
+      <span class="bento-icon" style="background:var(--pi-a);color:var(--on-pi-a)"><span class="material-symbols-outlined">token</span></span>
+      <span class="bento-label">Token<span class="count-badge" data-count="token">0</span></span>
+    </button>
+  </section>
 
   <main id="vault-list" class="vault-list"></main>
   <div id="empty-state" class="empty-state hidden">
-    <p>No items yet.</p>
-    <p class="empty-sub">Tap + to add your first entry.</p>
+    <p>No matches.</p>
+    <p class="empty-sub">Try a different search.</p>
   </div>
 
   <button id="btn-fab" class="fab" aria-label="Add entry">
@@ -800,6 +819,31 @@ const Cosmetics = (() => {
     </div>
     <p class="picker-hint">Long-press a category to edit its fields</p>
     <button class="btn btn-ghost btn-block" id="picker-cancel">Close</button>
+  </div>
+</div>
+
+<!-- ============ CATEGORY LIST SHEET ============ -->
+<div id="sheet-cat" class="sheet-overlay hidden">
+  <div class="sheet sheet-tall">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-header-side">
+        <button id="cat-close" class="icon-btn" aria-label="Close">
+          <span class="material-symbols-outlined" style="color:var(--danger)">close</span>
+        </button>
+      </div>
+      <h2 id="cat-title"></h2>
+      <div class="sheet-header-side sheet-header-side--end">
+        <button id="cat-add" class="icon-btn" aria-label="Add entry">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
+    </div>
+    <div id="cat-list" class="cat-list"></div>
+    <div id="cat-empty" class="empty-state hidden" style="padding:40px 12px">
+      <p>No entries yet.</p>
+      <p class="empty-sub">Tap + to add one.</p>
+    </div>
   </div>
 </div>
 
@@ -1075,7 +1119,7 @@ const IDB_WRAP_KEY = 'wrappingKey';
 let masterKey = null;      // CryptoKey (AES-GCM) derived from password, in-memory only
 let saltB64 = null;
 let vault = { items: [] };
-let currentCatFilter = 'all';
+let catOpen = null;   // category whose list sheet is open
 let activeItemId = null;
 
 const CATS = {
@@ -1097,9 +1141,17 @@ const SEARCH_FIELD = {
   note: 'label',
 };
 
+// Which field acts as the entry's title/search key. Fields are all deletable now, so fall back gracefully.
+function titleKey(cat) {
+  const sch = (typeof SCHEMAS !== 'undefined' && SCHEMAS[cat]) || [];
+  if (sch.some(f => f.key === 'label')) return 'label';
+  const f = sch.find(x => !isSecretField(x) && x.type !== 'textarea') || sch.find(x => !isSecretField(x)) || sch[0];
+  return f ? f.key : 'label';
+}
+
 // Title shown in list/view: "Name — Holder" for bank & card (holder optional)
 function itemTitle(item) {
-  const name = item.fields.label || '';
+  const name = item.fields[titleKey(item.cat)] || '';
   const holder = (item.cat === 'bank' || item.cat === 'card') ? (item.fields.holder || '').trim() : '';
   return name && holder ? `${name} — ${holder}` : name;
 }
@@ -1178,7 +1230,7 @@ function sanitizeSchema(arr) {
     if (!FIELD_TYPES[type]) type = 'text';
     const plain = type !== 'textarea' && type !== 'select';
     const f = { key, label: String(r.label || '').trim().slice(0, 60) || key, type };
-    if (r.required || key === 'label') f.required = true;
+    if (r.required) f.required = true;
     if (type === 'password' || (plain && r.secret)) f.secret = true;
     if (type === 'password' && r.generate) f.generate = true;
     const ph = String(r.placeholder || '').slice(0, 80);
@@ -1194,10 +1246,7 @@ function sanitizeSchema(arr) {
     if (type === 'text' && ['numeric', 'tel', 'email', 'url'].includes(r.inputmode)) f.inputmode = r.inputmode;
     out.push(f);
   }
-  const li = out.findIndex(f => f.key === 'label');
-  if (li < 0) return null;            // every category must keep its title field
-  if (li > 0) out.unshift(out.splice(li, 1)[0]);
-  return out;
+  return out.length ? out : null;     // a category needs at least one field
 }
 
 // Live schemas = defaults overridden per-category by the user's customisations (stored encrypted in the vault).
@@ -1486,13 +1535,16 @@ function lockVault(reason) {
   applySchemas();
   // wipe decrypted data from the DOM
   $('#vault-list').innerHTML = '';
+  $('#cat-list').innerHTML = '';
+  catOpen = null;
+  updateBadges();
   $('#view-body').innerHTML = '';
   $('#form-editor').innerHTML = '';
   $('#schema-list').innerHTML = '';
   $('#search-input').value = '';
   $('#unlock-pass').value = '';
   $('#unlock-error').textContent = '';
-  ['#sheet-picker', '#sheet-schema', '#sheet-editor', '#sheet-view', '#sheet-menu', '#sheet-cosmetics']
+  ['#sheet-picker', '#sheet-cat', '#sheet-schema', '#sheet-editor', '#sheet-view', '#sheet-menu', '#sheet-cosmetics']
     .forEach(id => hide($(id)));
   hide($('#screen-app'));
   show($('#screen-unlock'));
@@ -1552,10 +1604,12 @@ function wireEvents() {
   const installBtn = $('#install-btn');
   if (installBtn) installBtn.addEventListener('click', promptInstall);
 
-  $('#category-select').addEventListener('change', (e) => {
-    currentCatFilter = e.target.value;
-    renderList();
+  $('#bento').addEventListener('click', (e) => {
+    const t = e.target.closest('.bento-tile'); if (t) openCatSheet(t.dataset.cat);
   });
+  $('#cat-close').addEventListener('click', closeCatSheet);
+  $('#sheet-cat').addEventListener('click', (e) => { if (e.target.id === 'sheet-cat') closeCatSheet(); });
+  $('#cat-add').addEventListener('click', () => { if (catOpen) openEditor(catOpen); });
 
   $('#search-input').addEventListener('input', renderList);
 
@@ -1659,44 +1713,75 @@ function wireCosmetics() {
   });
 }
 
+function buildItemCard(item, idx) {
+  const card = document.createElement('div');
+  card.className = 'item-card';
+  card.style.animationDelay = `${Math.min(idx, 8) * 25}ms`;
+  const sub = item.cat === 'password' ? (item.fields.username || item.fields.url || '') :
+              item.cat === 'card' ? maskTail(item.fields.cardNumber) :
+              item.cat === 'bank' ? maskTail(item.fields.accountNumber) :
+              item.cat === 'document' ? (item.fields.idNumber || '') :
+              item.cat === 'note' ? (item.fields.notes || '') : '';
+  const catTag = item.cat === 'card' ? (item.fields.cardType || CATS.card.label) : CATS[item.cat].label;
+  card.innerHTML = `
+    <div class="item-icon">${iconHtml(CATS[item.cat].icon)}</div>
+    <div class="item-text">
+      <p class="item-title">${escapeHtml(itemTitle(item) || 'Untitled')}</p>
+      <p class="item-sub">${escapeHtml(sub || CATS[item.cat].label)}</p>
+    </div>
+    <span class="item-cat-tag">${escapeHtml(catTag)}</span>
+  `;
+  card.addEventListener('click', () => openView(item));
+  return card;
+}
+
+function updateBadges() {
+  const counts = {};
+  Object.keys(CATS).forEach(c => counts[c] = 0);
+  vault.items.forEach(i => { if (counts[i.cat] !== undefined) counts[i.cat]++; });
+  $$('.count-badge[data-count]').forEach(b => { b.textContent = counts[b.dataset.count] || 0; });
+}
+
+function renderCatSheet() {
+  if (!catOpen) return;
+  const items = vault.items.filter(i => i.cat === catOpen).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  $('#cat-title').innerHTML = `${escapeHtml(CATS[catOpen].label)}<span class="count-badge">${items.length}</span>`;
+  const list = $('#cat-list');
+  list.innerHTML = '';
+  items.forEach((item, idx) => list.appendChild(buildItemCard(item, idx)));
+  items.length ? hide($('#cat-empty')) : show($('#cat-empty'));
+}
+
+function openCatSheet(cat) {
+  catOpen = cat;
+  renderCatSheet();
+  show($('#sheet-cat'));
+}
+function closeCatSheet() {
+  catOpen = null;
+  hide($('#sheet-cat'));
+}
+
+// Landing = bento grid of categories. Typing in search swaps it for a flat results list across all categories.
 function renderList() {
+  updateBadges();
   const q = $('#search-input').value.trim().toLowerCase();
   const list = $('#vault-list');
   list.innerHTML = '';
-  const filtered = vault.items.filter(item => {
-    const catOk = currentCatFilter === 'all' || item.cat === currentCatFilter;
-    if (!catOk) return false;
-    if (!q) return true;
-    const sk = SEARCH_FIELD[item.cat];
-    const hasSk = SCHEMAS[item.cat].some(f => f.key === sk);
-    const hay = ((hasSk ? item.fields[sk] : item.fields.label) || '').toLowerCase();
-    return hay.includes(q);
-  }).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-
-  if (filtered.length === 0) { show($('#empty-state')); return; }
-  hide($('#empty-state'));
-
-  filtered.forEach((item, idx) => {
-    const card = document.createElement('div');
-    card.className = 'item-card';
-    card.style.animationDelay = `${Math.min(idx, 8) * 25}ms`;
-    const sub = item.cat === 'password' ? (item.fields.username || item.fields.url || '') :
-                item.cat === 'card' ? maskTail(item.fields.cardNumber) :
-                item.cat === 'bank' ? maskTail(item.fields.accountNumber) :
-                item.cat === 'document' ? (item.fields.idNumber || '') :
-                item.cat === 'note' ? (item.fields.notes || '') : '';
-    const catTag = item.cat === 'card' ? (item.fields.cardType || CATS.card.label) : CATS[item.cat].label;
-    card.innerHTML = `
-      <div class="item-icon">${iconHtml(CATS[item.cat].icon)}</div>
-      <div class="item-text">
-        <p class="item-title">${escapeHtml(itemTitle(item) || 'Untitled')}</p>
-        <p class="item-sub">${escapeHtml(sub || CATS[item.cat].label)}</p>
-      </div>
-      <span class="item-cat-tag">${escapeHtml(catTag)}</span>
-    `;
-    card.addEventListener('click', () => openView(item));
-    list.appendChild(card);
-  });
+  if (!q) {
+    show($('#bento')); hide(list); hide($('#empty-state'));
+  } else {
+    hide($('#bento')); show(list);
+    const found = vault.items.filter(item => {
+      const sk = SEARCH_FIELD[item.cat];
+      const hasSk = SCHEMAS[item.cat].some(f => f.key === sk);
+      const hay = ((hasSk ? item.fields[sk] : item.fields[titleKey(item.cat)]) || '').toLowerCase();
+      return hay.includes(q);
+    }).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    if (found.length === 0) show($('#empty-state')); else hide($('#empty-state'));
+    found.forEach((item, idx) => list.appendChild(buildItemCard(item, idx)));
+  }
+  renderCatSheet();
 }
 function maskTail(v) {
   if (!v) return '';
@@ -1786,7 +1871,9 @@ function openEditor(cat, item) {
     const fd = new FormData(form);
     const fields = {};
     for (const f of schema) fields[f.key] = (fd.get(f.key) || '').toString();
-    if (!fields.label) { toast('Label is required'); return; }
+    const missing = schema.find(f => f.required && !(fields[f.key] || '').trim());
+    if (missing) { toast(`${missing.label} is required`); return; }
+    if (!Object.values(fields).some(v => String(v).trim())) { toast('Fill in at least one field'); return; }
 
     if (activeItemId) {
       const item2 = vault.items.find(i => i.id === activeItemId);
@@ -1836,7 +1923,7 @@ function openView(item) {
 
   for (const f of schema) {
     const val = item.fields[f.key];
-    if (!val && f.key !== 'label') continue;
+    if (!val && f.key !== titleKey(item.cat)) continue;
     const row = document.createElement('div');
     row.className = 'view-row';
     const isSecret = isSecretField(f);
@@ -1893,19 +1980,18 @@ function schemaSubtitle(f) {
 }
 
 function schemaRowHtml(f, i, n) {
-  const locked = f.key === 'label';
+  const onlyOne = n <= 1;
   const plain = f.type !== 'textarea' && f.type !== 'select';
   const typeOpts = Object.entries(FIELD_TYPES)
-    .filter(([k]) => !locked || k === 'text' || k === 'select')
     .map(([k, v]) => `<option value="${k}" ${f.type === k ? 'selected' : ''}>${v}</option>`).join('');
   return `
     <div class="schema-row-head">
       <button type="button" class="schema-row-toggle" data-act="toggle">
         <span class="schema-row-name">${escapeHtml(f.label) || 'Untitled'}</span><small>${schemaSubtitle(f)}</small>
       </button>
-      <button type="button" class="icon-btn" data-act="up" aria-label="Move up" ${i <= 1 ? 'disabled' : ''}><span class="material-symbols-outlined">arrow_upward</span></button>
-      <button type="button" class="icon-btn" data-act="down" aria-label="Move down" ${locked || i === n - 1 ? 'disabled' : ''}><span class="material-symbols-outlined">arrow_downward</span></button>
-      <button type="button" class="icon-btn" data-act="del" aria-label="Delete field" ${locked ? 'disabled' : ''}><span class="material-symbols-outlined" style="color:var(--danger)">delete</span></button>
+      <button type="button" class="icon-btn" data-act="up" aria-label="Move up" ${i <= 0 ? 'disabled' : ''}><span class="material-symbols-outlined">arrow_upward</span></button>
+      <button type="button" class="icon-btn" data-act="down" aria-label="Move down" ${i === n - 1 ? 'disabled' : ''}><span class="material-symbols-outlined">arrow_downward</span></button>
+      <button type="button" class="icon-btn" data-act="del" aria-label="Delete field" ${onlyOne ? 'disabled' : ''}><span class="material-symbols-outlined" style="color:var(--danger)">delete</span></button>
     </div>
     <div class="schema-row-body">
       <label class="field"><span>Label</span><input type="text" data-p="label" maxlength="60" value="${escapeHtml(f.label)}" /></label>
@@ -1913,9 +1999,9 @@ function schemaRowHtml(f, i, n) {
       <label class="field"><span>Placeholder</span><input type="text" data-p="placeholder" maxlength="80" value="${escapeHtml(f.placeholder || '')}" /></label>
       ${plain ? `<label class="field"><span>Max length (blank = no limit)</span><input type="number" data-p="maxlength" min="1" max="1000" value="${f.maxlength || ''}" /></label>` : ''}
       ${f.type === 'select' ? `<label class="field"><span>Options (one per line)</span><textarea data-p="options">${escapeHtml((f.options || []).join('\n'))}</textarea></label>` : ''}
-      ${locked ? `<p class="schema-hint">This is the entry's title field: it can be renamed but not removed or made optional.</p>` : `
-      <label class="schema-check"><input type="checkbox" data-p="required" ${f.required ? 'checked' : ''} /> Required</label>`}
-      ${plain && !locked && f.type !== 'password' ? `<label class="schema-check"><input type="checkbox" data-p="secret" ${f.secret ? 'checked' : ''} /> Hide value (mask like a password)</label>` : ''}
+      <label class="schema-check"><input type="checkbox" data-p="required" ${f.required ? 'checked' : ''} /> Required</label>
+      ${onlyOne ? `<p class="schema-hint">This is the last field, so it can't be deleted. Add another field first.</p>` : ''}
+      ${plain && f.type !== 'password' ? `<label class="schema-check"><input type="checkbox" data-p="secret" ${f.secret ? 'checked' : ''} /> Hide value (mask like a password)</label>` : ''}
       ${f.type === 'password' ? `<label class="schema-check"><input type="checkbox" data-p="generate" ${f.generate ? 'checked' : ''} /> Show password generator</label>` : ''}
     </div>`;
 }
@@ -1982,9 +2068,9 @@ function onSchemaClick(e) {
     return;
   }
   schemaDirty = true;
-  if (act === 'up' && i > 1) [schemaDraft[i - 1], schemaDraft[i]] = [schemaDraft[i], schemaDraft[i - 1]];
+  if (act === 'up' && i > 0) [schemaDraft[i - 1], schemaDraft[i]] = [schemaDraft[i], schemaDraft[i - 1]];
   if (act === 'down' && i < schemaDraft.length - 1) [schemaDraft[i + 1], schemaDraft[i]] = [schemaDraft[i], schemaDraft[i + 1]];
-  if (act === 'del') { schemaDraft.splice(i, 1); schemaOpen.delete(key); }
+  if (act === 'del') { if (schemaDraft.length <= 1) return; schemaDraft.splice(i, 1); schemaOpen.delete(key); }
   renderSchemaList(act === 'del' ? null : key);
 }
 
@@ -2140,7 +2226,9 @@ async function importCSV(e) {
       if (cat === '__schema__' || !SCHEMAS[cat]) continue;
       total++;
       const known = new Set(SCHEMAS[cat].map(f => f.key));
-      const fields = { label, notes: notes || '' };
+      const fields = {};
+      if (known.has('label')) fields.label = label || '';
+      if (known.has('notes')) fields.notes = notes || '';
       pairs.forEach(([k, v]) => { if (!k) return; if (known.has(k) && !BAD_KEYS.has(k)) fields[k] = v; else skipped++; });
       const exists = vault.items.find(i => i.id === id);
       if (exists) { exists.fields = fields; exists.updatedAt = Number(updatedAt) || Date.now(); }

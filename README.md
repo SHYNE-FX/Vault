@@ -9,6 +9,7 @@ An offline-first Progressive Web App for storing passwords, cards, and notes —
 - **Installable PWA** — works offline, add-to-home-screen support, auto-updates in place
 - **Biometric quick-unlock** via WebAuthn (Face ID / Touch ID / fingerprint), where supported
 - **Auto-lock** — locks after 600 s of inactivity, or 120 s after the app is minimised / backgrounded
+- **Bento landing** — 2×3 category grid with entry-count badges; tap a tile for its list
 - **Cosmetics** — Light/Dark theme, custom accent colour, 7 Google Fonts, font size 8–48 px (saved on-device)
 - **CSV backup & restore** for portable, user-controlled backups
 
