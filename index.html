@@ -217,6 +217,12 @@ margin-top: .5vh;
   color: var(--accent);
   box-shadow: none;
 }
+#btn-lock.icon-btn {
+  border-radius: var(--radius-sm);
+  background: var(--on-accent-16);
+  color: var(--on-accent);
+  box-shadow: none;
+}
 #editor-close.icon-btn {
   border-radius: var(--radius-sm);
   background: transparent;
@@ -726,6 +732,9 @@ const Cosmetics = (() => {
         <span class="material-symbols-outlined">install_mobile</span>
         Install app
       </button>
+      <button id="btn-lock" class="icon-btn" type="button" aria-label="Lock vault" title="Lock vault">
+        <span class="material-symbols-outlined">lock</span>
+      </button>
       <button id="btn-menu" class="icon-btn" aria-label="Menu">
         <span class="material-symbols-outlined">menu</span>
       </button>
@@ -888,10 +897,6 @@ const Cosmetics = (() => {
     <button class="menu-row" id="menu-cosmetics">
       <span class="material-symbols-outlined" style="color:var(--accent-fg)">lens_blur</span>
       Cosmetics
-    </button>
-    <button class="menu-row danger" id="menu-lock">
-      <span class="material-symbols-outlined" style="color:var(--danger)">lock</span>
-      Lock vault
     </button>
     <input type="file" id="import-file-input" accept=".csv" class="hidden" />
     <button class="btn btn-ghost btn-block" id="menu-cancel">Close</button>
@@ -1577,7 +1582,7 @@ function wireEvents() {
   $('#menu-cancel').addEventListener('click', () => hide($('#sheet-menu')));
   $('#sheet-menu').addEventListener('click', (e) => { if (e.target.id === 'sheet-menu') hide($('#sheet-menu')); });
 
-  $('#menu-lock').addEventListener('click', () => lockVault());
+  $('#btn-lock').addEventListener('click', () => lockVault());
   wireCosmetics();
 
   $('#menu-export').addEventListener('click', exportCSV);
