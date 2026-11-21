@@ -249,33 +249,35 @@ margin-top: .5vh;
 .bento {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, minmax(120px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: auto;
+  align-content: start;
+  gap: 10px;
   padding: 2px 16px calc(100px + env(safe-area-inset-bottom));
 }
 .bento-tile {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
   border: 1.5px solid var(--outline);
   background: var(--surface);
   border-radius: var(--radius-md);
   box-shadow: var(--elev-1);
-  padding: 14px 8px;
+  aspect-ratio: 1 / 1; align-self: start; min-width: 0; min-height: 0; overflow: hidden;
+  padding: 8px 4px;
   color: var(--on-surface);
   user-select: none; -webkit-user-select: none; touch-action: manipulation;
   transition: transform .12s ease, border-color .15s ease, background-color .15s ease;
 }
 .bento-tile:active { transform: scale(.96); background: var(--accent-tint); border-color: var(--accent-lighter); }
 .bento-icon {
-  width: 56px; height: 56px; border-radius: 16px;
+  width: clamp(32px, 36%, 44px); aspect-ratio: 1 / 1; border-radius: 12px; flex: none;
   display: flex; align-items: center; justify-content: center;
 }
-.bento-icon .material-symbols-outlined { font-size: 28px !important; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+.bento-icon .material-symbols-outlined { font-size: clamp(20px, 6.5vw, 28px) !important; font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
 .bento-label { display: inline-flex; align-items: center; font-size: calc(15px * var(--fs)); font-weight: 600; }
 .count-badge {
   display: inline-flex; align-items: center; justify-content: center;
   min-width: calc(22px * var(--fs)); height: calc(22px * var(--fs)); padding: 0 6px;
-  margin-left: 8px; border-radius: 999px;
+  margin-left: 6px; border-radius: 999px;
   background: #e52222; color: #fff;
   font-size: calc(12.5px * var(--fs)); font-weight: 700; line-height: 1;
   box-shadow: 0 0 0 2px var(--surface);
@@ -364,17 +366,17 @@ margin-top: .5vh;
 }
 .sheet h2 { font-size: calc(18px * var(--fs)); font-weight: 700; margin: 0 0 16px; color: var(--accent-head); }
 
-.picker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.picker-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
 .picker-item {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   border: 1.5px solid var(--outline);
   background: var(--surface);
   border-radius: var(--radius-md);
-  padding: 18px 10px;
+  padding: 8px 4px; justify-content: center; min-height: 0; overflow: hidden; text-align: center; overflow-wrap: anywhere; line-height: 1.15;
   font-size: calc(13.5px * var(--fs)); font-weight: 600; color: var(--on-surface);
   transition: transform .12s ease, border-color .15s ease, background-color .15s ease;
 }
-.picker-item { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
+.picker-item { aspect-ratio: 1 / 1; min-width: 0; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
 .picker-hint { text-align: center; font-size: calc(12px * var(--fs)); color: var(--on-surface-muted); margin: -6px 0 14px; }
 .picker-item:active { transform: scale(.95); background: var(--accent-tint); border-color: var(--accent-lighter); }
 .picker-icon {
@@ -579,8 +581,7 @@ margin-top: .5vh;
 .icon-grid button { aspect-ratio: 1; border: 1.5px solid var(--outline); background: var(--surface); color: var(--on-surface); border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 0; }
 .icon-grid button.active { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-fg); }
 .bento-empty { grid-column: 1 / -1; text-align: center; color: var(--on-surface-muted); padding: 40px 12px; margin: 0; }
-.bento { grid-auto-rows: minmax(120px, 1fr); }
-.bento-label { flex-wrap: wrap; justify-content: center; text-align: center; row-gap: 4px; }
+.bento-label { max-width: 100%; overflow-wrap: anywhere; line-height: 1.15; flex-wrap: wrap; justify-content: center; text-align: center; row-gap: 4px; }
 /* ===== COSMETICS ===== */
 .cos-block { margin-bottom: 20px; }
 .cos-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--accent-label); margin: 0 0 8px; display: flex; justify-content: space-between; }

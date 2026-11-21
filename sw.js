@@ -1,5 +1,5 @@
 // Vault service worker — offline-first cache with versioned auto-update.
-const VERSION = 'v14';
+const VERSION = 'v17';
 const CACHE = `vault-cache-${VERSION}`;
 const OFFLINE_URL = './offline.html';
 
